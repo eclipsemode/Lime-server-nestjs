@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum PromoCodeType {
+  RUB
+  percent
+}
+
+enum OrderType {
+  DELIVERY
+  PICKUP
+}
+
+enum PaymentType {
+  CASH
+  CARD
+}
+
+enum OrderStatus {
+  new
+  accepted
+  production
+  produced
+  delivery
+  completed
+  deleted
+}
+
+enum ProductType {
+  PIZZA
+  DEFAULT
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  dateOfBirth  DateTime?
+  role         UserRole      @default(USER)
+  name         String?
+  surname      String?
+  tel          String        @unique
+  street       String?
+  house        Int?
+  floor        Int?
+  entrance     Int?
+  room         Int?
+  isActivated  Boolean       @default(false)
+  bonus        Bonus[]
+  token        Token[]
+  order        Order[]
+  confirmation Confirmation?
+  createdAt    DateTime      @default(now())
+}
+
+model Branch {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  order     Order[]
+  createdAt DateTime @default(now())
+}
+
+model Bonus {
+  id        Int      @id @default(autoincrement())
+  score     Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  order     Order?   @relation(fields: [orderId], references: [id])
+  orderId   Int?     @unique
+  createdAt DateTime @default(now())
+}
+
+model Confirmation {
+  id        Int      @id @default(autoincrement())
+  requestId String
+  code      Int
+  expiresIn DateTime
+  isUsed    Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+  createdAt DateTime @default(now())
+}
+
+model Token {
+  id           Int      @id @default(autoincrement())
+  refreshToken String
+  user         User     @relation(fields: [userId], references: [id])
+  userId       Int
+  createdAt    DateTime @default(now())
+}
+
+model PromoCode {
+  id        Int           @id @default(autoincrement())
+  code      String
+  type      PromoCodeType
+  discount  Int
+  limit     Int?
+  order     Order[]
+  createdAt DateTime      @default(now())
+}
+
+model Order {
+  id             Int            @id @default(autoincrement())
+  bonus          Bonus?
+  totalPrice     Int
+  totalAmount    Int
+  type           OrderType
+  clientName     String
+  clientAddress  String?
+  clientEntrance Int?
+  clientFloor    Int?
+  clientRoom     Int?
+  clientTel      Int
+  clientEmail    String?
+  preOrderDate   DateTime?
+  utensils       Int
+  payment        PaymentType
+  commentary     String?
+  promoCode      PromoCode?     @relation(fields: [promoCodeId], references: [id])
+  promoCodeId    Int?
+  status         OrderStatus    @default(new)
+  channel        Int?
+  user           User?          @relation(fields: [userId], references: [id])
+  userId         Int?
+  branch         Branch         @relation(fields: [branchId], references: [id])
+  branchId       Int
+  orderProduct   OrderProduct[]
+  createdAt      DateTime       @default(now())
+}
+
+model OrderProduct {
+  id          Int         @id @default(autoincrement())
+  product     Product[]
+  order       Order?      @relation(fields: [orderId], references: [id])
+  orderId     Int?
+  name        String
+  rating      Int
+  description String
+  image       String
+  orderIndex  Int
+  type        ProductType @default(DEFAULT)
+  productSize String
+  price       Int
+  sku         String      @unique
+  amount      Int
+  createdAt   DateTime    @default(now())
+}
+
+model Product {
+  id             Int           @id @default(autoincrement())
+  orderProduct   OrderProduct? @relation(fields: [orderProductId], references: [id])
+  orderProductId Int?
+  productSize    ProductSize[]
+  name           String
+  rating         Int           @default(5)
+  description    String
+  image          String
+  orderIndex     Int
+  type           ProductType   @default(DEFAULT)
+  category       Category      @relation(fields: [categoryId], references: [id])
+  categoryId     Int
+  createdAt      DateTime      @default(now())
+}
+
+model ProductSize {
+  id        Int      @id @default(autoincrement())
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  name      String
+  price     Int
+  sku       String
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id         Int       @id @default(autoincrement())
+  product    Product[]
+  name       String
+  image      String
+  orderIndex Int       @default(autoincrement())
+  createdAt  DateTime  @default(now())
+}
