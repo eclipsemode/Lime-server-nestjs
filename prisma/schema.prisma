@@ -43,30 +43,42 @@ enum ProductType {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  email        String?       @unique
-  dateOfBirth  DateTime?
+  id           String        @id @default(uuid())
   role         UserRole      @default(USER)
-  name         String?
-  surname      String?
   tel          String        @unique
-  street       String?
-  house        Int?
-  floor        Int?
-  entrance     Int?
-  room         Int?
   isActivated  Boolean       @default(false)
   bonus        Bonus[]
-  token        Token[]
+  token        Token?
   order        Order[]
   confirmation Confirmation?
+  profile      Profile?
   createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   @@map("users")
 }
 
+model Profile {
+  id          String    @id @default(uuid())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @unique
+  email       String?   @unique
+  dateOfBirth DateTime?
+  name        String?
+  surname     String?
+  street      String?
+  house       String?
+  floor       String?
+  entrance    String?
+  room        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("profiles")
+}
+
 model Branch {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String   @unique
   order     Order[]
   createdAt DateTime @default(now())
@@ -75,43 +87,45 @@ model Branch {
 }
 
 model Bonus {
-  id        Int      @id @default(autoincrement())
-  score     Int
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  order     Order?   @relation(fields: [orderId], references: [id])
-  orderId   Int?     @unique
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  score       Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  order       Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  orderId     String?  @unique
+  description String?
+  createdAt   DateTime @default(now())
 
   @@map("bonuses")
 }
 
 model Confirmation {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   requestId String
   code      Int
   expiresIn DateTime
   isUsed    Boolean  @default(false)
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
   createdAt DateTime @default(now())
 
   @@map("confirmations")
 }
 
 model Token {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(uuid())
   refreshToken String
-  user         User     @relation(fields: [userId], references: [id])
-  userId       Int
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String   @unique
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("tokens")
 }
 
 model PromoCode {
-  id        Int           @id @default(autoincrement())
-  code      String
+  id        String        @id @default(uuid())
+  code      String        @unique
   type      PromoCodeType
   discount  Int
   limit     Int?
@@ -122,7 +136,7 @@ model PromoCode {
 }
 
 model Order {
-  id             Int            @id @default(autoincrement())
+  id             String         @id @default(uuid())
   bonus          Bonus?
   totalPrice     Int
   totalAmount    Int
@@ -138,14 +152,14 @@ model Order {
   utensils       Int
   payment        PaymentType
   commentary     String?
-  promoCode      PromoCode?     @relation(fields: [promoCodeId], references: [id])
-  promoCodeId    Int?
+  promoCode      PromoCode?     @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
+  promoCodeId    String?
   status         OrderStatus    @default(new)
-  channel        Int?
-  user           User?          @relation(fields: [userId], references: [id])
-  userId         Int?
-  branch         Branch         @relation(fields: [branchId], references: [id])
-  branchId       Int
+  channel        Int?           @default(2030)
+  user           User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId         String?
+  branch         Branch?        @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  branchId       String?
   orderProduct   OrderProduct[]
   createdAt      DateTime       @default(now())
 
@@ -153,10 +167,10 @@ model Order {
 }
 
 model OrderProduct {
-  id          Int         @id @default(autoincrement())
+  id          String      @id @default(uuid())
   product     Product[]
-  order       Order?      @relation(fields: [orderId], references: [id])
-  orderId     Int?
+  order       Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String      @unique
   name        String
   rating      Int
   description String
@@ -173,27 +187,27 @@ model OrderProduct {
 }
 
 model Product {
-  id             Int           @id @default(autoincrement())
-  orderProduct   OrderProduct? @relation(fields: [orderProductId], references: [id])
-  orderProductId Int?
+  id             String        @id @default(uuid())
+  orderProduct   OrderProduct? @relation(fields: [orderProductId], references: [id], onDelete: SetNull)
+  orderProductId String?       @unique
   productSize    ProductSize[]
   name           String
   rating         Int           @default(5)
   description    String
   image          String
-  orderIndex     Int
+  orderIndex     Int           @default(autoincrement())
   type           ProductType   @default(DEFAULT)
-  category       Category      @relation(fields: [categoryId], references: [id])
-  categoryId     Int
+  category       Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId     String?
   createdAt      DateTime      @default(now())
 
   @@map("products")
 }
 
 model ProductSize {
-  id        Int      @id @default(autoincrement())
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
+  id        String   @id @default(uuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
   name      String
   price     Int
   sku       String
@@ -203,7 +217,7 @@ model ProductSize {
 }
 
 model Category {
-  id         Int       @id @default(autoincrement())
+  id         String    @id @default(uuid())
   product    Product[]
   name       String    @unique
   image      String

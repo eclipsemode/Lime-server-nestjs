@@ -1,32 +1,84 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UpdateUserReqDto } from './dto/update-user-req.dto';
 import { DbService } from '../db/db.service';
 
 @Injectable()
 export class UserService {
   constructor(private readonly dbService: DbService) {}
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
 
-  findAll() {
-    return this.dbService.user.findMany({
-      include: {
-        bonus: true,
+  findUserByPhone(tel: string) {
+    const parsedTel = tel.replace('+', '');
+
+    return this.dbService.user.findUnique({
+      where: {
+        tel: parsedTel,
       },
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  createUserWithTel(tel: string) {
+    const parsedTel = tel.replace('+', '');
+
+    return this.dbService.user.create({
+      data: {
+        tel: parsedTel,
+      },
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  findAll() {
+    return this.dbService.user.findMany();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findOne(id: string) {
+    const foundUser = await this.dbService.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        profile: true,
+        order: true,
+        bonus: true,
+      },
+    });
+
+    if (!foundUser) {
+      throw new NotFoundException({
+        type: 'FindOne',
+        description: "Couldn't find user.",
+      });
+    }
+
+    return foundUser;
+  }
+
+  async update(id: string, updateUserDto: UpdateUserReqDto) {
+    const foundProfile = await this.dbService.profile.findUnique({
+      where: {
+        userId: id,
+      },
+    });
+
+    if (!foundProfile) {
+      throw new NotFoundException({
+        type: 'Update',
+        description: "Cannot find user's profile.",
+      });
+    }
+
+    return this.dbService.profile.update({
+      where: {
+        userId: id,
+      },
+      data: updateUserDto,
+    });
+  }
+
+  remove(id: string) {
+    return this.dbService.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

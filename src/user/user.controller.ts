@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -10,27 +9,22 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiFoundResponse, ApiTags } from '@nestjs/swagger';
-import { FindUsersDto } from './dto/find-users.dto';
+import { UpdateUserReqDto } from './dto/update-user-req.dto';
+import { ApiFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { FindUsersResDto } from './dto/find-users-res.dto';
+import { FindUserResDto } from './dto/find-user-res.dto';
+import { UpdateUserResDto } from './dto/update-user-res.dto';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
-  @Get()
+  @Get('all')
   @ApiFoundResponse({
-    type: FindUsersDto,
-    description: 'Successfully found.',
+    type: FindUsersResDto,
+    description: 'Users successfully found.',
     isArray: true,
-    status: 200,
   })
   @HttpCode(HttpStatus.OK)
   findAll() {
@@ -38,17 +32,29 @@ export class UserController {
   }
 
   @Get(':id')
+  @ApiFoundResponse({
+    type: FindUserResDto,
+    description: "User's successfully found.",
+  })
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @ApiOkResponse({
+    type: UpdateUserResDto,
+    description: "User's successfully updated.",
+  })
+  update(@Param('id') id: string, @Body() updateUserReqDto: UpdateUserReqDto) {
+    return this.userService.update(id, updateUserReqDto);
   }
 
   @Delete(':id')
+  @ApiOkResponse({
+    type: FindUsersResDto,
+    description: 'User successfully deleted.',
+  })
   remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+    return this.userService.remove(id);
   }
 }
