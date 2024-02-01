@@ -15,6 +15,8 @@ import {
   ApiBearerAuth,
   ApiFoundResponse,
   ApiOkResponse,
+  ApiOperation,
+  ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
 import { FindUsersResDto } from './dto/find-users-res.dto';
@@ -40,6 +42,10 @@ export class UserController {
     isArray: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Get all users',
+    description: 'Getting all users with. Only for ADMIN role',
+  })
   findAll() {
     return this.userService.findAll();
   }
@@ -50,6 +56,10 @@ export class UserController {
   @ApiFoundResponse({
     type: FindUserResDto,
     description: "User's successfully found.",
+  })
+  @ApiOperation({
+    summary: 'Get user by id',
+    description: 'Get user by id param. Only available for authorized users',
   })
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
@@ -62,6 +72,10 @@ export class UserController {
     type: UpdateUserResDto,
     description: "User's successfully updated.",
   })
+  @ApiOperation({
+    summary: 'Update user by id',
+    description: 'Update user by id param. Only available for authorized users',
+  })
   update(@Param('id') id: string, @Body() updateUserReqDto: UpdateUserReqDto) {
     return this.userService.update(id, updateUserReqDto);
   }
@@ -73,6 +87,10 @@ export class UserController {
   @ApiOkResponse({
     type: FindUsersResDto,
     description: 'User successfully deleted.',
+  })
+  @ApiOperation({
+    summary: 'Remove user by id',
+    description: 'Remove user by id param. Only available for ADMIN',
   })
   remove(@Param('id') id: string) {
     return this.userService.remove(id);

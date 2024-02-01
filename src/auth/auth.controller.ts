@@ -6,12 +6,15 @@ import {
   Put,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { ConfirmAuthReqDto } from './dto/confirm-auth-req.dto';
@@ -22,6 +25,7 @@ import { CookieService } from '../cookie/cookie.service';
 import { ConfirmAuthResDto } from './dto/confirm-auth-res.dto';
 import { LogoutReqDto } from './dto/logout-req.dto';
 import { LogoutResDto } from './dto/logout-res.dto';
+import { AuthGuard } from './auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -36,6 +40,10 @@ export class AuthController {
     type: AuthResDto,
     description: 'User successfully created.',
   })
+  @ApiOperation({
+    summary: 'Authorization with phone number',
+    description: 'Simple phone authorization with callback',
+  })
   auth(@Body() authDto: AuthReqDto) {
     return this.authService.auth(authDto);
   }
@@ -44,6 +52,10 @@ export class AuthController {
   @ApiOkResponse({
     type: ConfirmAuthResDto,
     description: 'Code successfully confirmed.',
+  })
+  @ApiOperation({
+    summary: 'Confirmation with code',
+    description: 'Confirm authorization with code',
   })
   async confirm(
     @Body() confirmAuthReqDto: ConfirmAuthReqDto,
@@ -77,6 +89,10 @@ export class AuthController {
     type: LogoutResDto,
     description: 'Successfully logged out.',
   })
+  @ApiOperation({
+    summary: 'Logout | Delete refresh token',
+    description: 'Logging out with deleting refresh token data from cookies',
+  })
   logout(@Body() logoutReqDto: LogoutReqDto) {
     return this.authService.logout(logoutReqDto);
   }
@@ -85,6 +101,10 @@ export class AuthController {
   @ApiOkResponse({
     type: ConfirmAuthResDto,
     description: 'Tokens successfully refresh.',
+  })
+  @ApiOperation({
+    summary: 'Refresh pari of tokens',
+    description: 'Refreshing accessToken and refreshToken',
   })
   async refresh(
     @Req() request: Request,
