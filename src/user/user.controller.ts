@@ -1,26 +1,35 @@
 import {
-  Controller,
-  Get,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserReqDto } from './dto/update-user-req.dto';
-import { ApiFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { FindUsersResDto } from './dto/find-users-res.dto';
 import { FindUserResDto } from './dto/find-user-res.dto';
 import { UpdateUserResDto } from './dto/update-user-res.dto';
+import { RoleGuard } from './role.guard';
 
 @ApiTags('user')
 @Controller('user')
+@UseGuards(RoleGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('all')
+  @ApiBearerAuth('JWT-auth')
   @ApiFoundResponse({
     type: FindUsersResDto,
     description: 'Users successfully found.',
