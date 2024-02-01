@@ -9,7 +9,6 @@ import { Request } from 'express';
 import { TokenService } from '../token/token.service';
 import { Reflector } from '@nestjs/core';
 import { Role } from './role.decorator';
-import { UserRole } from './interfaces/user.interface';
 
 @Injectable()
 export class RoleGuard implements CanActivate {

@@ -21,14 +21,18 @@ import { FindUsersResDto } from './dto/find-users-res.dto';
 import { FindUserResDto } from './dto/find-user-res.dto';
 import { UpdateUserResDto } from './dto/update-user-res.dto';
 import { RoleGuard } from './role.guard';
+import { Role } from './role.decorator';
+import { UserRole } from './interfaces/user.interface';
+import { AuthGuard } from '../auth/auth.guard';
 
 @ApiTags('user')
 @Controller('user')
-@UseGuards(RoleGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('all')
+  @UseGuards(RoleGuard)
+  @Role(UserRole.ADMIN)
   @ApiBearerAuth('JWT-auth')
   @ApiFoundResponse({
     type: FindUsersResDto,
@@ -41,6 +45,8 @@ export class UserController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiFoundResponse({
     type: FindUserResDto,
     description: "User's successfully found.",
@@ -50,6 +56,8 @@ export class UserController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOkResponse({
     type: UpdateUserResDto,
     description: "User's successfully updated.",
@@ -59,6 +67,9 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(RoleGuard)
+  @ApiBearerAuth('JWT-auth')
+  @Role(UserRole.ADMIN)
   @ApiOkResponse({
     type: FindUsersResDto,
     description: 'User successfully deleted.',

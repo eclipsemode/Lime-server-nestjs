@@ -13,7 +13,7 @@ export class TokenService {
   async generate(generateTokenDto: GenerateTokenDto) {
     const accessToken = await this.jwtService.signAsync(generateTokenDto, {
       secret: process.env.SECRET_KEY_ACCESS,
-      expiresIn: '30m',
+      expiresIn: '5m',
     });
     const refreshToken = await this.jwtService.signAsync(generateTokenDto, {
       secret: process.env.SECRET_KEY_REFRESH,
