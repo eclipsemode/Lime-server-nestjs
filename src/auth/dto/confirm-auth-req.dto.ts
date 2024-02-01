@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsString } from 'class-validator';
 
-export class ConfirmAuthDto {
+export class ConfirmAuthReqDto {
   @ApiProperty({ example: 1234 })
   @IsInt()
   code: number;

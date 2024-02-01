@@ -101,7 +101,7 @@ model Bonus {
 
 model Confirmation {
   id        String   @id @default(uuid())
-  requestId String
+  requestId String   @unique
   code      Int
   expiresIn DateTime
   isUsed    Boolean  @default(false)
@@ -114,7 +114,7 @@ model Confirmation {
 
 model Token {
   id           String   @id @default(uuid())
-  refreshToken String
+  refreshToken String   @unique
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String   @unique
   createdAt    DateTime @default(now())

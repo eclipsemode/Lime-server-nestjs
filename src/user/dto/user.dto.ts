@@ -11,7 +11,7 @@ export class UserDto implements UserInterface {
   id: string;
 
   @ApiProperty({
-    enum: ['USER', 'ADMIN'],
+    enum: UserRole,
     example: UserRole.USER,
     description: "User's role",
   })
