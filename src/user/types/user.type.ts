@@ -1,11 +1,11 @@
-import ProfileInterface from './profile.interface';
+import IProfile from './profile.type';
 
 export enum UserRole {
   USER = 'USER',
   ADMIN = 'ADMIN',
 }
 
-export default interface UserInterface {
+export default interface IUser {
   id: string;
   role: UserRole;
   tel: string;
@@ -14,7 +14,7 @@ export default interface UserInterface {
   token?: any;
   order?: any[];
   confirmation?: any;
-  profile?: ProfileInterface;
+  profile?: IProfile;
   createdAt: Date;
   updatedAt: Date;
 }

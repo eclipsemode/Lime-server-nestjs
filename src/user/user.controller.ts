@@ -16,7 +16,6 @@ import {
   ApiFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
 import { FindUsersResDto } from './dto/find-users-res.dto';
@@ -24,8 +23,10 @@ import { FindUserResDto } from './dto/find-user-res.dto';
 import { UpdateUserResDto } from './dto/update-user-res.dto';
 import { RoleGuard } from './role.guard';
 import { Role } from './role.decorator';
-import { UserRole } from './interfaces/user.interface';
+import { UserRole } from './types/user.type';
 import { AuthGuard } from '../auth/auth.guard';
+import { GetUserOrdersResDto } from './dto/get-user-orders-res.dto';
+import { GetUserBonusesResDto } from './dto/get-user-bonuses-res.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -63,6 +64,40 @@ export class UserController {
   })
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
+  }
+
+  @Get('/orders/:id')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiFoundResponse({
+    type: GetUserOrdersResDto,
+    description: "User's orders successfully found",
+    isArray: true,
+  })
+  @ApiOperation({
+    summary: "Get user's orders by id",
+    description:
+      "Get user's orders by id param. Only available for authorized users",
+  })
+  getUserOrders(@Param('id') id: string) {
+    return this.userService.getUserOrders(id);
+  }
+
+  @Get('/bonuses/:id')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiFoundResponse({
+    type: GetUserBonusesResDto,
+    description: "User's bonuses successfully found",
+    isArray: true,
+  })
+  @ApiOperation({
+    summary: "Get user's bonuses by id",
+    description:
+      "Get user's bonuses by id param. Only available for authorized users",
+  })
+  getUserBonuses(@Param('id') id: string) {
+    return this.userService.getUserBonuses(id);
   }
 
   @Patch(':id')

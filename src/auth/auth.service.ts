@@ -12,11 +12,11 @@ import * as GreenSMS from 'greensms';
 import { ConfirmAuthReqDto } from './dto/confirm-auth-req.dto';
 import { AuthReqDto } from './dto/auth-req.dto';
 import { TokenService } from '../token/token.service';
-import { UserRole } from '../user/interfaces/user.interface';
+import { UserRole } from '../user/types/user.type';
 import { PrismaClient } from '@prisma/client';
 import { LogoutReqDto } from './dto/logout-req.dto';
 import { Request } from 'express';
-import { TokenDto } from './dto/token.dto';
+import { TokenDto } from '../token/dto/token.dto';
 
 const prisma = new PrismaClient();
 

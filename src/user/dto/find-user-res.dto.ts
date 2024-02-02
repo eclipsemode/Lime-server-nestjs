@@ -12,7 +12,7 @@ export class FindUserResDto extends UserDto {
   @IsArray()
   order: any[];
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, example: null })
   @IsObject()
   profile: ProfileDto;
 }

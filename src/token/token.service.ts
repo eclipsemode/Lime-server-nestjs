@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { GenerateTokenDto } from './dto/generate-token.dto';
 import { JwtService } from '@nestjs/jwt';
 import { DbService } from '../db/db.service';
-import { TokenDto } from '../auth/dto/token.dto';
+import { TokenDto } from './dto/token.dto';
 
 @Injectable()
 export class TokenService {

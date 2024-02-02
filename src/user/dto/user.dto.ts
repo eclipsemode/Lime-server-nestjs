@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsDate, IsPhoneNumber, IsString } from 'class-validator';
-import UserInterface, { UserRole } from '../interfaces/user.interface';
+import { UserRole } from '../types/user.type';
+import IUser from '../types/user.type';
 
-export class UserDto implements UserInterface {
+export class UserDto implements IUser {
   @ApiProperty({
     example: 'bf60ab0f-23ac-4da6-a269-e61e63b72117',
     description: "User's id",

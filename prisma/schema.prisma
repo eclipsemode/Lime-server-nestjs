@@ -88,7 +88,7 @@ model Branch {
 
 model Bonus {
   id          String   @id @default(uuid())
-  score       Int
+  score       String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   order       Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
@@ -127,7 +127,7 @@ model PromoCode {
   id        String        @id @default(uuid())
   code      String        @unique
   type      PromoCodeType
-  discount  Int
+  discount  String
   limit     Int?
   order     Order[]
   createdAt DateTime      @default(now())
@@ -138,18 +138,18 @@ model PromoCode {
 model Order {
   id             String         @id @default(uuid())
   bonus          Bonus?
-  totalPrice     Int
-  totalAmount    Int
+  totalPrice     String
+  totalAmount    String
   type           OrderType
   clientName     String
   clientAddress  String?
-  clientEntrance Int?
-  clientFloor    Int?
-  clientRoom     Int?
-  clientTel      Int
+  clientEntrance String?
+  clientFloor    String?
+  clientRoom     String?
+  clientTel      String
   clientEmail    String?
   preOrderDate   DateTime?
-  utensils       Int
+  utensils       String
   payment        PaymentType
   commentary     String?
   promoCode      PromoCode?     @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
@@ -178,9 +178,9 @@ model OrderProduct {
   orderIndex  Int
   type        ProductType @default(DEFAULT)
   productSize String
-  price       Int
+  price       String
   sku         String      @unique
-  amount      Int
+  amount      String
   createdAt   DateTime    @default(now())
 
   @@map("orderProducts")
@@ -209,7 +209,7 @@ model ProductSize {
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
   name      String
-  price     Int
+  price     String
   sku       String
   createdAt DateTime @default(now())
 

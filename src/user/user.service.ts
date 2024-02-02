@@ -52,6 +52,22 @@ export class UserService {
     return foundUser;
   }
 
+  getUserOrders(id: string) {
+    return this.dbService.order.findMany({
+      where: {
+        userId: id,
+      },
+    });
+  }
+
+  getUserBonuses(id: string) {
+    return this.dbService.bonus.findMany({
+      where: {
+        userId: id,
+      },
+    });
+  }
+
   async update(id: string, updateUserDto: UpdateUserReqDto) {
     const foundProfile = await this.dbService.profile.findUnique({
       where: {

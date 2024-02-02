@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsMobilePhone } from 'class-validator';
-import { UserRole } from '../../user/interfaces/user.interface';
+import { UserRole } from '../../user/types/user.type';
 
 export class GenerateTokenDto {
   @ApiProperty()
