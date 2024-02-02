@@ -4,10 +4,13 @@ import * as process from 'process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
+import { LoggerService } from './logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: { origin: process.env.CLIENT_URL },
+    bufferLogs: true,
+    logger: new LoggerService(),
   });
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
@@ -29,6 +32,7 @@ async function bootstrap() {
       'JWT-auth',
     )
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 

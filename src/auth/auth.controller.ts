@@ -25,7 +25,6 @@ import { CookieService } from '../cookie/cookie.service';
 import { ConfirmAuthResDto } from './dto/confirm-auth-res.dto';
 import { LogoutReqDto } from './dto/logout-req.dto';
 import { LogoutResDto } from './dto/logout-res.dto';
-import { AuthGuard } from './auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')

@@ -4,6 +4,8 @@ import { UserModule } from './user/user.module';
 import { TokenModule } from './token/token.module';
 import { AuthModule } from './auth/auth.module';
 import { CookieModule } from './cookie/cookie.module';
+import { LoggerService } from './logger/logger.service';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { CookieModule } from './cookie/cookie.module';
     TokenModule,
     AuthModule,
     CookieModule,
+    LoggerModule,
   ],
+  providers: [LoggerService],
 })
 export class AppModule {}
