@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateUserReqDto } from './dto/update-user-req.dto';
 import { DbService } from '../db/db.service';
 
@@ -16,8 +20,21 @@ export class UserService {
     });
   }
 
-  createUserWithTel(tel: string) {
+  async createUserWithTel(tel: string) {
     const parsedTel = tel.replace('+', '');
+
+    const foundUser = await this.dbService.user.findUnique({
+      where: {
+        tel: parsedTel,
+      },
+    });
+
+    if (foundUser) {
+      throw new ConflictException({
+        type: 'createUserWithTel',
+        description: "Can't create user, because phone exists",
+      });
+    }
 
     return this.dbService.user.create({
       data: {
@@ -90,7 +107,20 @@ export class UserService {
     });
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const foundUser = await this.dbService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!foundUser) {
+      throw new NotFoundException({
+        type: 'remove',
+        description: "Can't find user",
+      });
+    }
+
     return this.dbService.user.delete({
       where: {
         id,

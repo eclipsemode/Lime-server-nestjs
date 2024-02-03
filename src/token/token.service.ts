@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GenerateTokenDto } from './dto/generate-token.dto';
 import { JwtService } from '@nestjs/jwt';
 import { DbService } from '../db/db.service';
@@ -65,6 +69,19 @@ export class TokenService {
   }
 
   async removeToken(userId: string, refreshToken: string) {
+    const foundToken = await this.dbService.token.findUnique({
+      where: {
+        refreshToken,
+      },
+    });
+
+    if (!foundToken) {
+      throw new NotFoundException({
+        type: 'removeToken',
+        description: "Can't remove token, because it doesn't exists",
+      });
+    }
+
     return this.dbService.token.delete({
       where: {
         refreshToken,

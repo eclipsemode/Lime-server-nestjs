@@ -100,7 +100,7 @@ export class AuthController {
     description: 'Tokens successfully refresh.',
   })
   @ApiOperation({
-    summary: 'Refresh pari of tokens',
+    summary: 'Refresh pair of tokens',
     description: 'Refreshing accessToken and refreshToken',
   })
   async refresh(
