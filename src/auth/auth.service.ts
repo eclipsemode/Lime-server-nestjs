@@ -16,7 +16,7 @@ import { UserRole } from '../user/types/user.type';
 import { PrismaClient } from '@prisma/client';
 import { LogoutReqDto } from './dto/logout-req.dto';
 import { Request } from 'express';
-import { TokenDto } from '../token/dto/token.dto';
+import { TokenEntity } from '../token/entities/token.entity';
 
 const prisma = new PrismaClient();
 
@@ -149,7 +149,7 @@ export class AuthService {
       });
     }
 
-    const userDto = new TokenDto({
+    const userDto = new TokenEntity({
       ...foundUser,
       role: foundUser.role as UserRole,
     });
@@ -196,7 +196,7 @@ export class AuthService {
       },
     });
 
-    const userDto = new TokenDto({
+    const userDto = new TokenEntity({
       ...foundUser,
       role: foundUser.role as UserRole,
     });

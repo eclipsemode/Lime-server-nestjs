@@ -1,9 +1,9 @@
-import { UserDto } from './user.dto';
+import { UserEntity } from '../entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsObject } from 'class-validator';
-import { ProfileDto } from './profile.dto';
+import { ProfileEntity } from '../entities/profile.entity';
 
-export class FindUserResDto extends UserDto {
+export class FindUserResDto extends UserEntity {
   @ApiProperty({ isArray: true, example: [], required: false })
   @IsArray()
   bonus: any[];
@@ -14,5 +14,5 @@ export class FindUserResDto extends UserDto {
 
   @ApiProperty({ required: false, example: null })
   @IsObject()
-  profile: ProfileDto;
+  profile: ProfileEntity;
 }

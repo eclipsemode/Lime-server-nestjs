@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { GenerateTokenDto } from './dto/generate-token.dto';
 import { JwtService } from '@nestjs/jwt';
 import { DbService } from '../db/db.service';
-import { TokenDto } from './dto/token.dto';
+import { TokenEntity } from './entities/token.entity';
 
 @Injectable()
 export class TokenService {
@@ -26,13 +26,13 @@ export class TokenService {
     };
   }
 
-  verifyAccessToken(token: string): Promise<TokenDto> {
+  verifyAccessToken(token: string): Promise<TokenEntity> {
     return this.jwtService.verifyAsync(token, {
       secret: process.env.SECRET_KEY_ACCESS,
     });
   }
 
-  verifyRefreshToken(token: string): Promise<TokenDto> {
+  verifyRefreshToken(token: string): Promise<TokenEntity> {
     return this.jwtService.verifyAsync(token, {
       secret: process.env.SECRET_KEY_REFRESH,
     });

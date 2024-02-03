@@ -1,10 +1,10 @@
-import { UserDto } from './user.dto';
+import { UserEntity } from '../entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsObject } from 'class-validator';
-import { ProfileDto } from './profile.dto';
+import { ProfileEntity } from '../entities/profile.entity';
 
-export class UpdateUserResDto extends UserDto {
+export class UpdateUserResDto extends UserEntity {
   @ApiProperty({ required: false })
   @IsObject()
-  profile: ProfileDto;
+  profile: ProfileEntity;
 }

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsEmail, IsString } from 'class-validator';
 import IProfile from '../types/profile.type';
 
-export class ProfileDto implements IProfile {
+export class ProfileEntity implements IProfile {
   @ApiProperty({
     example: 'bf60ab0f-23ac-4da6-a269-e61e63b72117',
     description: "Profile's id",

@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { CookieModule } from './cookie/cookie.module';
 import { LoggerService } from './logger/logger.service';
 import { LoggerModule } from './logger/logger.module';
+import { BranchModule } from './branch/branch.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LoggerModule } from './logger/logger.module';
     AuthModule,
     CookieModule,
     LoggerModule,
+    BranchModule,
   ],
   providers: [LoggerService],
 })

@@ -1,9 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsMobilePhone,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 import { UserRole } from '../types/user.type';
 import IUser from '../types/user.type';
 
-export class UserDto implements IUser {
+export class UserEntity implements IUser {
   @ApiProperty({
     example: 'bf60ab0f-23ac-4da6-a269-e61e63b72117',
     description: "User's id",
@@ -16,10 +23,11 @@ export class UserDto implements IUser {
     example: UserRole.USER,
     description: "User's role",
   })
+  @IsEnum(UserRole)
   role: UserRole;
 
   @ApiProperty({ example: '79180000000', description: "User's phone number" })
-  @IsPhoneNumber('RU')
+  @IsMobilePhone('ru-RU')
   tel: string;
 
   @ApiProperty({ example: false, description: "User's activation status" })
