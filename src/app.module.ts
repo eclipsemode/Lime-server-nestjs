@@ -7,9 +7,17 @@ import { CookieModule } from './cookie/cookie.module';
 import { LoggerService } from './logger/logger.service';
 import { LoggerModule } from './logger/logger.module';
 import { BranchModule } from './branch/branch.module';
+import { CategoryModule } from './category/category.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { FsService } from './fs/fs.service';
+import { FsModule } from './fs/fs.module';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'static'),
+    }),
     ConfigModule.forRoot({
       envFilePath: '../.env.development',
       isGlobal: true,
@@ -20,7 +28,9 @@ import { BranchModule } from './branch/branch.module';
     CookieModule,
     LoggerModule,
     BranchModule,
+    CategoryModule,
+    FsModule,
   ],
-  providers: [LoggerService],
+  providers: [LoggerService, FsService],
 })
 export class AppModule {}

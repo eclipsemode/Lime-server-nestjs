@@ -220,7 +220,7 @@ model Category {
   id         String    @id @default(uuid())
   product    Product[]
   name       String    @unique
-  image      String
+  image      String?
   orderIndex Int       @default(autoincrement())
   createdAt  DateTime  @default(now())
 

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsString, MinLength } from 'class-validator';
 
 export class BranchEntity {
   @ApiProperty({
@@ -11,6 +11,7 @@ export class BranchEntity {
 
   @ApiProperty({ example: 'Armavir', description: 'Name of branch' })
   @IsString()
+  @MinLength(2)
   name: string;
 
   @ApiProperty({
