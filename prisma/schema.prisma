@@ -128,7 +128,7 @@ model PromoCode {
   code      String        @unique
   type      PromoCodeType
   discount  String
-  limit     Int?
+  limit     Int
   order     Order[]
   createdAt DateTime      @default(now())
 

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsInt, IsString, MaxLength } from 'class-validator';
+import {
+  IsDate,
+  IsInt,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class CategoryEntity {
   @ApiProperty({
@@ -23,7 +29,8 @@ export class CategoryEntity {
     required: false,
   })
   @IsString()
-  image?: string;
+  @IsOptional()
+  image: string;
 
   @ApiProperty({
     example: 1,
@@ -38,5 +45,6 @@ export class CategoryEntity {
     description: 'Category created date',
   })
   @IsDate()
+  @IsOptional()
   createdAt: Date;
 }

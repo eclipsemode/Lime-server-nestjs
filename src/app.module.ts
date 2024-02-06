@@ -12,6 +12,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { FsService } from './fs/fs.service';
 import { FsModule } from './fs/fs.module';
+import { PromoCodeModule } from './promo-code/promo-code.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { FsModule } from './fs/fs.module';
     BranchModule,
     CategoryModule,
     FsModule,
+    PromoCodeModule,
   ],
   providers: [LoggerService, FsService],
 })

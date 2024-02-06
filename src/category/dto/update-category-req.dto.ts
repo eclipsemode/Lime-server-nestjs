@@ -1,6 +1,6 @@
 import { CategoryEntity } from '../entities/category.entity';
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsBase64, IsOptional, IsString } from 'class-validator';
 
 export class UpdateCategoryReqDto extends PickType(CategoryEntity, ['name']) {
   @ApiProperty({
@@ -9,8 +9,11 @@ export class UpdateCategoryReqDto extends PickType(CategoryEntity, ['name']) {
     required: false,
   })
   @IsString()
+  @IsOptional()
   name: string;
 
   @ApiProperty({ type: String, format: 'binary', required: false })
+  @IsOptional()
+  @IsBase64()
   image: File;
 }
