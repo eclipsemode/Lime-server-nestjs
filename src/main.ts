@@ -4,8 +4,8 @@ import * as process from 'process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
-import { LoggerService } from './logger/logger.service';
 import * as express from 'express';
+import { LoggerService } from '@services/logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

@@ -1,18 +1,22 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
-import { TokenModule } from './token/token.module';
-import { AuthModule } from './auth/auth.module';
-import { CookieModule } from './cookie/cookie.module';
-import { LoggerService } from './logger/logger.service';
-import { LoggerModule } from './logger/logger.module';
-import { BranchModule } from './branch/branch.module';
-import { CategoryModule } from './category/category.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { FsService } from './fs/fs.service';
-import { FsModule } from './fs/fs.module';
-import { PromoCodeModule } from './promo-code/promo-code.module';
+import { UserModule } from '@api/user/user.module';
+import { TokenModule } from '@services/token/token.module';
+import { AuthModule } from '@api/auth/auth.module';
+import { CookieModule } from '@services/cookie/cookie.module';
+import { LoggerModule } from '@services/logger/logger.module';
+import { BranchModule } from '@api/branch/branch.module';
+import { CategoryModule } from '@api/category/category.module';
+import { FsModule } from '@services/fs/fs.module';
+import { PromoCodeModule } from '@api/promo-code/promo-code.module';
+import { ProductModule } from '@api/product/product.module';
+import { DbModule } from '@services/db/db.module';
+import { BonusModule } from '@api/bonus/bonus.module';
+import { OrderModule } from '@api/order/order.module';
+import { LoggerService } from '@services/logger/logger.service';
+import { FsService } from '@services/fs/fs.service';
 
 @Module({
   imports: [
@@ -32,6 +36,10 @@ import { PromoCodeModule } from './promo-code/promo-code.module';
     CategoryModule,
     FsModule,
     PromoCodeModule,
+    ProductModule,
+    DbModule,
+    BonusModule,
+    OrderModule,
   ],
   providers: [LoggerService, FsService],
 })

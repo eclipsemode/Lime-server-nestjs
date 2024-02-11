@@ -37,11 +37,6 @@ enum OrderStatus {
   deleted
 }
 
-enum ProductType {
-  PIZZA
-  DEFAULT
-}
-
 model User {
   id           String        @id @default(uuid())
   role         UserRole      @default(USER)
@@ -167,39 +162,37 @@ model Order {
 }
 
 model OrderProduct {
-  id          String      @id @default(uuid())
-  product     Product[]
-  order       Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId     String      @unique
+  id          String   @id @default(uuid())
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId   String?  @unique
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String   @unique
   name        String
   rating      Int
   description String
   image       String
   orderIndex  Int
-  type        ProductType @default(DEFAULT)
   productSize String
   price       String
-  sku         String      @unique
+  sku         String   @unique
   amount      String
-  createdAt   DateTime    @default(now())
+  createdAt   DateTime @default(now())
 
   @@map("orderProducts")
 }
 
 model Product {
-  id             String        @id @default(uuid())
-  orderProduct   OrderProduct? @relation(fields: [orderProductId], references: [id], onDelete: SetNull)
-  orderProductId String?       @unique
-  productSize    ProductSize[]
-  name           String
-  rating         Int           @default(5)
-  description    String
-  image          String
-  orderIndex     Int           @default(autoincrement())
-  type           ProductType   @default(DEFAULT)
-  category       Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId     String?
-  createdAt      DateTime      @default(now())
+  id           String         @id @default(uuid())
+  OrderProduct OrderProduct[]
+  productSize  ProductSize[]
+  name         String
+  rating       Int?           @default(5)
+  description  String
+  image        String?
+  orderIndex   Int?           @unique @default(autoincrement())
+  category     Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId   String?
+  createdAt    DateTime       @default(now())
 
   @@map("products")
 }
@@ -210,7 +203,7 @@ model ProductSize {
   productId String
   name      String
   price     String
-  sku       String
+  sku       String?  @unique
   createdAt DateTime @default(now())
 
   @@map("productSizes")
@@ -221,7 +214,7 @@ model Category {
   product    Product[]
   name       String    @unique
   image      String?
-  orderIndex Int       @default(autoincrement())
+  orderIndex Int       @unique @default(autoincrement())
   createdAt  DateTime  @default(now())
 
   @@map("categories")
