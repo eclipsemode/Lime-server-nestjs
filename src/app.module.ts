@@ -22,6 +22,10 @@ import { FsService } from '@services/fs/fs.service';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),
+      serveRoot: '',
+      renderPath: '*',
+      exclude: [],
+      serveStaticOptions: {},
     }),
     ConfigModule.forRoot({
       envFilePath: '../.env.development',

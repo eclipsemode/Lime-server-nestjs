@@ -15,6 +15,14 @@ export class ProductEntity {
     isArray: true,
     type: () => ProductSizeEntity,
     description: 'Product sizes if exists',
+    example: [
+      {
+        id: 'bf60ab0f-23ac-4da6-a269-e61e63b72117',
+        name: '32 inch',
+        price: '300',
+        sku: 'string',
+      },
+    ],
   })
   @IsArray()
   productSize: ProductSizeEntity[];
