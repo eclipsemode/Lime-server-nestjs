@@ -162,37 +162,38 @@ model Order {
 }
 
 model OrderProduct {
-  id          String   @id @default(uuid())
-  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
-  productId   String?  @unique
-  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId     String   @unique
+  id          String    @id @default(uuid())
+  product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId   String?
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String
   name        String
   rating      Int
   description String
-  image       String
-  orderIndex  Int
+  image       String?
   productSize String
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId  String?
   price       String
-  sku         String   @unique
+  sku         String?
   amount      String
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 
   @@map("orderProducts")
 }
 
 model Product {
-  id           String         @id @default(uuid())
-  OrderProduct OrderProduct[]
-  productSize  ProductSize[]
-  name         String
-  rating       Int?           @default(5)
-  description  String
-  image        String?
-  orderIndex   Int?           @unique @default(autoincrement())
-  category     Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId   String?
-  createdAt    DateTime       @default(now())
+  id                 String         @id @default(uuid())
+  OrderProductEntity OrderProduct[]
+  productSize        ProductSize[]
+  name               String
+  rating             Int?           @default(5)
+  description        String
+  image              String?
+  orderIndex         Int?           @unique @default(autoincrement())
+  category           Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId         String?
+  createdAt          DateTime       @default(now())
 
   @@map("products")
 }
@@ -210,12 +211,13 @@ model ProductSize {
 }
 
 model Category {
-  id         String    @id @default(uuid())
-  product    Product[]
-  name       String    @unique
-  image      String?
-  orderIndex Int       @unique @default(autoincrement())
-  createdAt  DateTime  @default(now())
+  id           String         @id @default(uuid())
+  product      Product[]
+  orderProduct OrderProduct[]
+  name         String         @unique
+  image        String?
+  orderIndex   Int            @unique @default(autoincrement())
+  createdAt    DateTime       @default(now())
 
   @@map("categories")
 }

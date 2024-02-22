@@ -1,31 +1,27 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   FileTypeValidator,
   Get,
   MaxFileSizeValidator,
   Param,
-  ParseArrayPipe,
   ParseFilePipe,
   Patch,
   Post,
   Put,
   Query,
-  Req,
   UploadedFile,
-  UseInterceptors,
-  UsePipes,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiProperty,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -34,9 +30,11 @@ import { CreateProductResDto } from './dto/create-product-res.dto';
 import { ApiFile } from '@decorators/api-file.decorator';
 import { GetProductResDto } from '@api/product/dto/get-product-res.dto';
 import { SortOrder, SortType } from '@api/product/types/product.type';
-import { ParseNumberPipe } from '@api/product/parseNumber.pipe';
 import { UpdateProductReqDto } from '@api/product/dto/update-product-req.dto';
 import { UpdateProductImageDto } from '@api/product/dto/update-productImage.dto';
+import { Role } from '@api/user/role.decorator';
+import { UserRole } from '@api/user/types/user.type';
+import { RoleGuard } from '@api/user/role.guard';
 
 @ApiTags('product')
 @Controller('product')
@@ -44,6 +42,9 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
+  @UseGuards(RoleGuard)
+  @Role(UserRole.ADMIN)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Create product',
     description: 'Create product',
@@ -103,6 +104,9 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @UseGuards(RoleGuard)
+  @Role(UserRole.ADMIN)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Update product',
     description: 'Update product by id',
@@ -119,6 +123,9 @@ export class ProductController {
   }
 
   @Put('image/:id')
+  @UseGuards(RoleGuard)
+  @Role(UserRole.ADMIN)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Update product image',
     description: 'Update product image by id',
@@ -145,6 +152,9 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @UseGuards(RoleGuard)
+  @Role(UserRole.ADMIN)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Delete product',
     description: 'Delete product by id',

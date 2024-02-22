@@ -36,8 +36,8 @@ export default interface IOrder {
   commentary?: string;
   promoCodeId?: string;
   status: OrderStatus;
-  channel: number;
-  userId: string;
-  branchId: string;
+  channel?: number;
+  userId?: string;
+  branchId?: string;
   createdAt: Date;
 }
