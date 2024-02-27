@@ -45,6 +45,20 @@ export class OrderController {
     return this.orderService.getAll();
   }
 
+  @Get('user/:userId')
+  @ApiOperation({
+    summary: 'Get all orders by user id',
+    description: 'Get all orders, with user id',
+  })
+  @ApiFoundResponse({
+    type: GetAllOrdersDto,
+    isArray: true,
+    description: 'Successfully found',
+  })
+  getOrdersByUserId(@Param('userId') userId: string) {
+    return this.orderService.getOrdersByUserId(userId);
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard)
   @ApiBearerAuth('JWT-auth')

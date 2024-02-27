@@ -18,6 +18,30 @@ export class OrderService {
     });
   }
 
+  async getOrdersByUserId(userId: string) {
+    const foundUser = await this.dbService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!foundUser) {
+      throw new NotFoundException({
+        type: 'getOrdersByUserId',
+        description: "Can't find user by id",
+      });
+    }
+
+    return this.dbService.order.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        orderProduct: true,
+      },
+    });
+  }
+
   async get(id: string) {
     const foundOrder = await this.dbService.order.findUnique({
       where: {
