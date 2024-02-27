@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
@@ -14,6 +15,7 @@ import {
   ApiFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { GetAllOrdersDto } from '@api/order/dto/get-all-orders.dto';
@@ -22,6 +24,7 @@ import { RoleGuard } from '@api/user/role.guard';
 import { Role } from '@api/user/role.decorator';
 import { UserRole } from '@api/user/types/user.type';
 import { AuthGuard } from '@api/auth/auth.guard';
+import { IsInt } from 'class-validator';
 
 @ApiTags('order')
 @Controller('order')
@@ -45,7 +48,22 @@ export class OrderController {
     return this.orderService.getAll();
   }
 
-  @Get('user/:userId')
+  @Get('user')
+  @ApiQuery({
+    name: 'userId',
+    type: String,
+    required: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'size',
+    type: Number,
+    required: false,
+  })
   @ApiOperation({
     summary: 'Get all orders by user id',
     description: 'Get all orders, with user id',
@@ -55,8 +73,12 @@ export class OrderController {
     isArray: true,
     description: 'Successfully found',
   })
-  getOrdersByUserId(@Param('userId') userId: string) {
-    return this.orderService.getOrdersByUserId(userId);
+  getOrdersByUserId(
+    @Query('userId') userId: string,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
+    return this.orderService.getOrdersByUserId(userId, page, size);
   }
 
   @Get(':id')

@@ -18,7 +18,7 @@ export class OrderService {
     });
   }
 
-  async getOrdersByUserId(userId: string) {
+  async getOrdersByUserId(userId: string, page: number, size: number) {
     const foundUser = await this.dbService.user.findUnique({
       where: {
         id: userId,
@@ -38,6 +38,7 @@ export class OrderService {
       },
       include: {
         orderProduct: true,
+        _count: true,
       },
     });
   }
