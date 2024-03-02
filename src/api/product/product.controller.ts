@@ -94,6 +94,7 @@ export class ProductController {
   @ApiFoundResponse({
     type: GetProductResDto,
     description: 'Successfully found',
+    isArray: true,
   })
   get(
     @Query('categoryId') categoryId: string,

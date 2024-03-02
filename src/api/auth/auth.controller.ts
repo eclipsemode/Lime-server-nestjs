@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
   Post,
   Put,
   Req,
@@ -90,11 +91,15 @@ export class AuthController {
     summary: 'Logout | Delete refresh token',
     description: 'Logging out with deleting refresh token data from cookies',
   })
-  logout(@Body() logoutReqDto: LogoutReqDto) {
-    return this.authService.logout(logoutReqDto);
+  logout(@Body() logoutReqDto: LogoutReqDto, @Req() request: Request) {
+    const refreshToken = request.cookies['refreshToken'];
+    return this.authService.logout({
+      userId: logoutReqDto.userId,
+      refreshToken,
+    });
   }
 
-  @Put('refresh')
+  @Get('refresh')
   @ApiOkResponse({
     type: ConfirmAuthResDto,
     description: 'Tokens successfully refresh.',

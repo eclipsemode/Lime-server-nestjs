@@ -185,6 +185,7 @@ model OrderProduct {
 model Product {
   id                 String         @id @default(uuid())
   OrderProductEntity OrderProduct[]
+  isPizza            Boolean        @default(false)
   productSize        ProductSize[]
   name               String
   rating             Int?           @default(5)

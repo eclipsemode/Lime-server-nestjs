@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsInt, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsInt,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ProductSizeEntity } from './productSize.entity';
+import { Transform } from 'class-transformer';
 
 export class ProductEntity {
   @ApiProperty({
@@ -10,6 +18,16 @@ export class ProductEntity {
   })
   @IsString()
   id: string;
+
+  @ApiProperty({
+    example: false,
+    description: 'Is pizza product?',
+  })
+  @IsBoolean()
+  @Transform(({ value }) => {
+    return value === 'true';
+  })
+  isPizza: boolean;
 
   @ApiProperty({
     isArray: true,

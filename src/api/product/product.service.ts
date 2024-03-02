@@ -25,6 +25,7 @@ export class ProductService {
       productSkus,
       categoryId,
       rating,
+      isPizza,
     }: CreateProductReqDto,
     image?: Express.Multer.File,
   ) {
@@ -81,6 +82,7 @@ export class ProductService {
             categoryId,
             rating: rating,
             image: image ? fileName : null,
+            isPizza,
           },
         });
 
@@ -220,6 +222,9 @@ export class ProductService {
             rating: updateProductReqDto.rating
               ? updateProductReqDto.rating
               : foundProduct.rating,
+            isPizza: updateProductReqDto.isPizza
+              ? updateProductReqDto.isPizza
+              : foundProduct.isPizza,
           },
         });
 

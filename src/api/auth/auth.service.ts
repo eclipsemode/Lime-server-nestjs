@@ -160,7 +160,13 @@ export class AuthService {
     return confirmDto;
   }
 
-  async logout({ userId, refreshToken }: LogoutReqDto) {
+  async logout({
+    userId,
+    refreshToken,
+  }: {
+    userId: string;
+    refreshToken: string;
+  }) {
     return this.tokenService.removeToken(userId, refreshToken);
   }
 

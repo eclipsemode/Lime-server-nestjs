@@ -8,11 +8,4 @@ export class LogoutReqDto {
   })
   @IsString()
   userId: string;
-
-  @ApiProperty({
-    example: 'daskdnlaalndksawindsoada822h1on21ini212131fsdASdd23112',
-    description: "User's refresh token",
-  })
-  @IsString()
-  refreshToken: string;
 }
