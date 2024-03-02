@@ -134,7 +134,7 @@ export class ProductService {
           case SortOrder.DESC:
             return this.dbService.$queryRaw`
               SELECT products.*,
-               json_agg(json_build_object('id', "productSizes"."id", 'name', "productSizes".name, 'price', "productSizes".price, 'sku', "productSizes".sku) ORDER BY "productSizes".price ASC) AS "productSizes"
+               json_agg(json_build_object('id', "productSizes"."id", 'name', "productSizes".name, 'price', "productSizes".price, 'sku', "productSizes".sku) ORDER BY "productSizes".price ASC) AS "productSize"
               FROM products
               JOIN "productSizes" ON products.id = "productSizes"."productId"
               WHERE "categoryId"=${categoryId}
@@ -144,9 +144,9 @@ export class ProductService {
           default:
             return this.dbService.$queryRaw`
               SELECT products.*,
-               json_agg(json_build_object('id', "productSizes"."id", 'name', "productSizes".name, 'price', "productSizes".price, 'sku', "productSizes".sku) ORDER BY "productSizes".price ASC) AS "productSizes"
+               json_agg(json_build_object('id', "productSizes"."id", 'name', "productSizes".name, 'price', "productSizes".price, 'sku', "productSizes".sku) ORDER BY "productSizes".price ASC) AS "productSize"
               FROM products
-              JOIN "productSizes" ON products.id = "productSizes"."productId"
+              JOIN "productSize" ON products.id = "productSizes"."productId"
               WHERE "categoryId"=${categoryId}
               GROUP BY products.id
               ORDER BY (SELECT "productSizes"."price" FROM "productSizes" WHERE "productSizes"."productId" = products.id ORDER BY "productSizes"."price" LIMIT 1) ASC;
@@ -157,7 +157,7 @@ export class ProductService {
           case SortOrder.DESC:
             return this.dbService.$queryRaw`
               SELECT products.*,
-               json_agg(json_build_object('id', "productSizes"."id", 'name', "productSizes".name, 'price', "productSizes".price, 'sku', "productSizes".sku) ORDER BY "productSizes".price ASC) AS "productSizes"
+               json_agg(json_build_object('id', "productSizes"."id", 'name', "productSizes".name, 'price', "productSizes".price, 'sku', "productSizes".sku) ORDER BY "productSizes".price ASC) AS "productSize"
               FROM products
               JOIN "productSizes" ON products.id = "productSizes"."productId"
               GROUP BY products.id
@@ -166,7 +166,7 @@ export class ProductService {
           default:
             return this.dbService.$queryRaw`
               SELECT products.*,
-               json_agg(json_build_object('id', "productSizes"."id", 'name', "productSizes".name, 'price', "productSizes".price, 'sku', "productSizes".sku) ORDER BY "productSizes".price ASC) AS "productSizes"
+               json_agg(json_build_object('id', "productSizes"."id", 'name', "productSizes".name, 'price', "productSizes".price, 'sku', "productSizes".sku) ORDER BY "productSizes".price ASC) AS "productSize"
               FROM products
               JOIN "productSizes" ON products.id = "productSizes"."productId"
               GROUP BY products.id
