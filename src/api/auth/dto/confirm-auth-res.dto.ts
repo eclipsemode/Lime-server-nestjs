@@ -9,4 +9,11 @@ export class ConfirmAuthResDto {
   @ApiProperty({ example: 'dnj2asdasda2jiq29dasfg21qd221d21d12f3dadadaf2a' })
   @IsString()
   refreshToken: string;
+
+  @ApiProperty({
+    example: 'dasdad-dasfg3wef-gfewggw-wewdgew3',
+    description: "User's id",
+  })
+  @IsString()
+  userId: string;
 }

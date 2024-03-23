@@ -35,6 +35,7 @@ import { UpdateProductImageDto } from '@api/product/dto/update-productImage.dto'
 import { Role } from '@api/user/role.decorator';
 import { UserRole } from '@api/user/types/user.type';
 import { RoleGuard } from '@api/user/role.guard';
+import { ChangeOrderReqDto } from '@api/product/dto/change-order-req.dto';
 
 @ApiTags('product')
 @Controller('product')
@@ -150,6 +151,22 @@ export class ProductController {
     image: Express.Multer.File,
   ) {
     return this.productService.updateImage(id, image);
+  }
+
+  @Post('change-order')
+  @UseGuards(RoleGuard)
+  @Role(UserRole.ADMIN)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOkResponse({
+    description: 'Order successfully changed',
+    isArray: true,
+  })
+  @ApiOperation({
+    summary: 'Change order products',
+    description: 'Change order products',
+  })
+  changeOrder(@Body() changeOrderReqDto: ChangeOrderReqDto) {
+    return this.productService.changeOrder(changeOrderReqDto);
   }
 
   @Delete(':id')

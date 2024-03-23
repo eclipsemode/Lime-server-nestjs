@@ -4,7 +4,6 @@ import {
   ForbiddenException,
   Get,
   Post,
-  Put,
   Req,
   Res,
 } from '@nestjs/common';
@@ -59,7 +58,7 @@ export class AuthController {
     @Body() confirmAuthReqDto: ConfirmAuthReqDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { accessToken, refreshToken } =
+    const { accessToken, refreshToken, userId } =
       await this.authService.confirm(confirmAuthReqDto);
 
     if (refreshToken) {
@@ -79,6 +78,7 @@ export class AuthController {
     return {
       accessToken,
       refreshToken,
+      userId,
     };
   }
 
@@ -112,7 +112,7 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { accessToken, refreshToken } =
+    const { accessToken, refreshToken, userId } =
       await this.authService.refresh(request);
 
     if (refreshToken) {
@@ -132,6 +132,7 @@ export class AuthController {
     return {
       accessToken,
       refreshToken,
+      userId,
     };
   }
 }

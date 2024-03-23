@@ -9,6 +9,7 @@ import { DbService } from '@services/db/db.service';
 import { FsService } from '@services/fs/fs.service';
 import { SortOrder, SortType } from '@api/product/types/product.type';
 import { UpdateProductReqDto } from '@api/product/dto/update-product-req.dto';
+import { ChangeOrderReqDto } from '@api/product/dto/change-order-req.dto';
 
 @Injectable()
 export class ProductService {
@@ -80,7 +81,7 @@ export class ProductService {
             name,
             description,
             categoryId,
-            rating: rating,
+            rating: rating > 10 ? 10 : rating < 1 ? 1 : rating,
             image: image ? fileName : null,
             isPizza,
           },
@@ -146,7 +147,7 @@ export class ProductService {
               SELECT products.*,
                json_agg(json_build_object('id', "productSizes"."id", 'name', "productSizes".name, 'price', "productSizes".price, 'sku', "productSizes".sku) ORDER BY "productSizes".price ASC) AS "productSize"
               FROM products
-              JOIN "productSize" ON products.id = "productSizes"."productId"
+              JOIN "productSizes" ON products.id = "productSizes"."productId"
               WHERE "categoryId"=${categoryId}
               GROUP BY products.id
               ORDER BY (SELECT "productSizes"."price" FROM "productSizes" WHERE "productSizes"."productId" = products.id ORDER BY "productSizes"."price" LIMIT 1) ASC;
@@ -303,6 +304,36 @@ export class ProductService {
         image: fileName,
       },
     });
+  }
+
+  async changeOrder(changeOrderReqDto: ChangeOrderReqDto) {
+    const { orderArr } = changeOrderReqDto;
+
+    const changeOrderPromises = orderArr.map(async (product) => {
+      const foundProduct = await this.dbService.product.findUnique({
+        where: {
+          id: product.id,
+        },
+      });
+
+      if (!foundProduct) {
+        throw new NotFoundException({
+          type: 'changeOrder',
+          description: 'Can not find product by id',
+        });
+      }
+
+      return this.dbService.product.update({
+        where: {
+          id: product.id,
+        },
+        data: {
+          orderIndex: product.orderIndex,
+        },
+      });
+    });
+
+    await Promise.all(changeOrderPromises);
   }
 
   async delete(id: string) {

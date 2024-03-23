@@ -157,7 +157,7 @@ export class AuthService {
 
     await this.tokenService.saveToken(foundUser.id, confirmDto.refreshToken);
 
-    return confirmDto;
+    return { userId: userDto.id, ...confirmDto };
   }
 
   async logout({
@@ -202,6 +202,13 @@ export class AuthService {
       },
     });
 
+    if (!foundUser) {
+      throw new NotFoundException({
+        type: 'Refresh',
+        description: 'Cannot find user',
+      });
+    }
+
     const userDto = new TokenEntity({
       ...foundUser,
       role: foundUser.role as UserRole,
@@ -211,6 +218,6 @@ export class AuthService {
 
     await this.tokenService.saveToken(userDto.id, newTokens.refreshToken);
 
-    return newTokens;
+    return { userId: foundUser.id, ...newTokens };
   }
 }

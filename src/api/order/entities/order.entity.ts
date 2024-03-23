@@ -208,15 +208,6 @@ export class OrderEntity implements IOrder {
   branchId?: string;
 
   @ApiProperty({
-    example: 'bf60ab0f-23ac-4da6-a269-e61e63b72117',
-    description: 'Product id',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  productId?: string;
-
-  @ApiProperty({
     example: '2024-02-02T18:31:33.721Z',
     description: 'Category created date',
     readOnly: true,

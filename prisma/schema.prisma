@@ -191,7 +191,7 @@ model Product {
   rating             Int?           @default(5)
   description        String
   image              String?
-  orderIndex         Int?           @unique @default(autoincrement())
+  orderIndex         Int?           @default(autoincrement())
   category           Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId         String?
   createdAt          DateTime       @default(now())
