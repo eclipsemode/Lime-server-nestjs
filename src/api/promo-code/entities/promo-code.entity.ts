@@ -49,3 +49,5 @@ export class PromoCodeEntity {
   @IsOptional()
   createdAt: Date;
 }
+
+export interface IPromoCodeEntity extends PromoCodeEntity {}

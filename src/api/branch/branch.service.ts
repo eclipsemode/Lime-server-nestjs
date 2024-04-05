@@ -6,6 +6,10 @@ import {
 import { CreateBranchReqDto } from './dto/create-branch-req.dto';
 import { ChangeBranchReqDto } from './dto/change-branch-req.dto';
 import { DbService } from '@services/db/db.service';
+import { BranchEntity } from '@api/branch/entities/branch.entity';
+import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client/extension';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class BranchService {
@@ -92,5 +96,28 @@ export class BranchService {
         id,
       },
     });
+  }
+
+  async findBranch(
+    branchId: string,
+    tx?: Omit<
+      PrismaClient<Prisma.TransactionClient, never, DefaultArgs>,
+      '$on' | '$connect' | '$disconnect' | '$use' | '$transaction' | '$extends'
+    >,
+  ): Promise<BranchEntity | undefined> {
+    if (!branchId) {
+      return undefined;
+    }
+
+    const foundBranch = await (tx
+      ? tx.branch
+      : this.dbService.branch
+    ).findUnique({
+      where: {
+        id: branchId,
+      },
+    });
+
+    return foundBranch ? foundBranch : undefined;
   }
 }

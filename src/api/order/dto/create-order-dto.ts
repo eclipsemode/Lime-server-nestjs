@@ -1,7 +1,8 @@
 import { OrderEntity } from '@api/order/entities/order.entity';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { OrderProductEntity } from '@api/order/entities/orderProduct.entity';
-import { IsArray } from 'class-validator';
+import { ArrayMinSize, IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateOrderDto extends OmitType(OrderEntity, [
   'createdAt',
@@ -24,6 +25,11 @@ export class CreateOrderDto extends OmitType(OrderEntity, [
       OmitType(OrderProductEntity, ['id', 'categoryId', 'image', 'orderId']),
     ),
   })
+  @ValidateNested({ each: true })
+  @Type(() =>
+    OmitType(OrderProductEntity, ['id', 'categoryId', 'image', 'orderId']),
+  )
+  @ArrayMinSize(1)
   @IsArray()
   orderProducts: Omit<
     OrderProductEntity,

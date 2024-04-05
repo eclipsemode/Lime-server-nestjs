@@ -6,6 +6,7 @@ import {
   IsEnum,
   IsInt,
   IsMobilePhone,
+  IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -15,6 +16,7 @@ import IOrder, {
   PaymentType,
 } from '@api/order/types/order.type';
 import { OrderProductEntity } from '@api/order/entities/orderProduct.entity';
+import { Transform, Type } from 'class-transformer';
 
 export class OrderEntity implements IOrder {
   @ApiProperty({
@@ -51,12 +53,14 @@ export class OrderEntity implements IOrder {
     description: 'Total price of order products',
   })
   @IsString()
+  @IsNotEmpty()
   totalPrice: string;
 
   @ApiProperty({
     example: '12',
     description: 'Total amount of order products',
   })
+  @IsNotEmpty()
   @IsString()
   totalAmount: string;
 
@@ -72,6 +76,7 @@ export class OrderEntity implements IOrder {
     example: 'Daniel',
     description: "Client's name",
   })
+  @IsNotEmpty()
   @IsString()
   clientName: string;
 
@@ -133,6 +138,7 @@ export class OrderEntity implements IOrder {
     required: false,
   })
   @IsDate()
+  @Type(() => Date)
   @IsOptional()
   preOrderDate?: Date;
 
@@ -203,9 +209,9 @@ export class OrderEntity implements IOrder {
     description: 'Branch id of order',
     required: false,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  branchId?: string;
+  branchId: string;
 
   @ApiProperty({
     example: '2024-02-02T18:31:33.721Z',

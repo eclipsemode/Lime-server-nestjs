@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 import { UserRole } from '../types/user.type';
 import IUser from '../types/user.type';
+import { Type } from 'class-transformer';
 
 export class UserEntity implements IUser {
   @ApiProperty({

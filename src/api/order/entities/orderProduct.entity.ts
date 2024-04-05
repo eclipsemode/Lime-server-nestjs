@@ -1,10 +1,14 @@
 import { ProductEntity } from '@api/product/entities/product.entity';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class OrderProductEntity extends OmitType(ProductEntity, [
   'orderIndex',
   'productSize',
+  'description',
+  'name',
+  'isPizza',
 ]) {
   @ApiProperty({
     example: 'bf60ab0f-23ac-4da6-a269-e61e63b72117',

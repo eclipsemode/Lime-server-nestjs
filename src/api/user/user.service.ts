@@ -5,6 +5,11 @@ import {
 } from '@nestjs/common';
 import { UpdateUserReqDto } from './dto/update-user-req.dto';
 import { DbService } from '@services/db/db.service';
+import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client/extension';
+import { DefaultArgs } from '@prisma/client/runtime/library';
+import { UserEntity } from '@api/user/entities/user.entity';
+import { UserRole } from '@api/user/types/user.type';
 
 @Injectable()
 export class UserService {
@@ -126,5 +131,27 @@ export class UserService {
         id,
       },
     });
+  }
+
+  async findUserById(
+    userId: string,
+    tx?: Omit<
+      PrismaClient<Prisma.TransactionClient, never, DefaultArgs>,
+      '$on' | '$connect' | '$disconnect' | '$use' | '$transaction' | '$extends'
+    >,
+  ): Promise<UserEntity | undefined> {
+    if (!userId) {
+      return undefined;
+    }
+
+    const foundUser = await (tx ? tx.user : this.dbService.user).findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    return foundUser
+      ? { ...foundUser, role: foundUser.role as UserRole }
+      : undefined;
   }
 }

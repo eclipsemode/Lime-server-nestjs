@@ -91,7 +91,7 @@ export class AuthService {
     if (!foundConfirmation) {
       throw new NotFoundException({
         type: 'Confirm',
-        description: 'Cannot find confirmation.',
+        description: 'Cannot find profile.',
       });
     }
 

@@ -2,12 +2,18 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { DbService } from '@services/db/db.service';
 import { CreateOrderDto } from '@api/order/dto/create-order-dto';
 import { PromoCodeService } from '@api/promo-code/promo-code.service';
+import { BranchService } from '@api/branch/branch.service';
+import { UserService } from '@api/user/user.service';
+import { ProductService } from '@api/product/product.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     private readonly dbService: DbService,
     private readonly promoCodeService: PromoCodeService,
+    private readonly branchService: BranchService,
+    private readonly userService: UserService,
+    private readonly productService: ProductService,
   ) {}
 
   async getAll() {
@@ -89,44 +95,27 @@ export class OrderService {
       clientTel,
     } = createOrderDto;
 
-    if (
-      orderProducts.length === 0 ||
-      !payment ||
-      !totalAmount ||
-      !channel ||
-      !branchId ||
-      !clientName ||
-      !clientTel
-    ) {
-      throw new NotFoundException({
-        type: 'create',
-        description: "Can't create order. Required data is not provided",
-      });
-    }
-
     try {
       const transaction = await this.dbService.$transaction(async (tx) => {
-        const foundPromoCode = await tx.promoCode.findUnique({
-          where: {
-            id: promoCodeId,
-          },
-        });
+        const foundPromoCode = await this.promoCodeService.findPromoCode(
+          promoCodeId,
+          tx,
+        );
 
         if (foundPromoCode) {
           await this.promoCodeService.use(promoCodeId);
         }
 
-        const foundBranch = await tx.branch.findUnique({
-          where: {
-            id: branchId,
-          },
-        });
+        const foundBranch = await this.branchService.findBranch(branchId, tx);
 
-        const foundUser = await tx.user.findFirst({
-          where: {
-            id: userId,
-          },
-        });
+        if (!foundBranch) {
+          throw new NotFoundException({
+            type: 'create',
+            description: "Can't find branch by branchId",
+          });
+        }
+
+        const foundUser = await this.userService.findUserById(userId, tx);
 
         const createdOrder = await tx.order.create({
           data: {
@@ -152,11 +141,10 @@ export class OrderService {
         });
 
         const orderProductPromises = orderProducts.map(async (product) => {
-          const foundProduct = await tx.product.findUnique({
-            where: {
-              id: product.productId,
-            },
-          });
+          const foundProduct = await this.productService.findProductById(
+            product.productId,
+            tx,
+          );
 
           if (!foundProduct) {
             throw new NotFoundException({
@@ -165,7 +153,7 @@ export class OrderService {
             });
           }
 
-          return await tx.orderProduct.create({
+          return tx.orderProduct.create({
             data: {
               price: product.price,
               image: foundProduct.image,
@@ -184,18 +172,7 @@ export class OrderService {
 
         await Promise.all(orderProductPromises);
 
-        return tx.order.findUnique({
-          where: {
-            id: createdOrder.id,
-          },
-          include: {
-            orderProduct: {
-              where: {
-                orderId: createdOrder.id,
-              },
-            },
-          },
-        });
+        return createdOrder;
       });
 
       return transaction;

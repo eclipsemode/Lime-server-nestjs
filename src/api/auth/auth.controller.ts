@@ -51,7 +51,7 @@ export class AuthController {
     description: 'Code successfully confirmed.',
   })
   @ApiOperation({
-    summary: 'Confirmation with code',
+    summary: 'RequestId with code',
     description: 'Confirm authorization with code',
   })
   async confirm(

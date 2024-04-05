@@ -7,6 +7,8 @@ import {
   Post,
   Query,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import {
@@ -24,7 +26,6 @@ import { RoleGuard } from '@api/user/role.guard';
 import { Role } from '@api/user/role.decorator';
 import { UserRole } from '@api/user/types/user.type';
 import { AuthGuard } from '@api/auth/auth.guard';
-import { IsInt } from 'class-validator';
 
 @ApiTags('order')
 @Controller('order')
@@ -97,6 +98,7 @@ export class OrderController {
   }
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({
     summary: 'Create order',
     description: 'Create order',
