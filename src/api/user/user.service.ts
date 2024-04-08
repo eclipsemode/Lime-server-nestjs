@@ -74,7 +74,7 @@ export class UserService {
     return foundUser;
   }
 
-  getUserOrders(id: string) {
+  async getUserOrders(id: string) {
     return this.dbService.order.findMany({
       where: {
         userId: id,
@@ -82,7 +82,7 @@ export class UserService {
     });
   }
 
-  getUserBonuses(id: string) {
+  async getUserBonuses(id: string) {
     return this.dbService.bonus.findMany({
       where: {
         userId: id,

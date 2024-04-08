@@ -26,13 +26,13 @@ export class TokenService {
     };
   }
 
-  verifyAccessToken(token: string): Promise<TokenEntity> {
+  async verifyAccessToken(token: string): Promise<TokenEntity> {
     return this.jwtService.verifyAsync(token, {
       secret: process.env.SECRET_KEY_ACCESS,
     });
   }
 
-  verifyRefreshToken(token: string): Promise<TokenEntity> {
+  async verifyRefreshToken(token: string): Promise<TokenEntity> {
     return this.jwtService.verifyAsync(token, {
       secret: process.env.SECRET_KEY_REFRESH,
     });
@@ -72,10 +72,7 @@ export class TokenService {
     });
 
     if (!foundToken) {
-      throw new NotFoundException({
-        type: 'removeToken',
-        description: "Can't remove token, because it doesn't exists",
-      });
+      return;
     }
 
     return this.dbService.token.delete({

@@ -93,6 +93,7 @@ export class AuthController {
   })
   logout(@Body() logoutReqDto: LogoutReqDto, @Req() request: Request) {
     const refreshToken = request.cookies['refreshToken'];
+
     return this.authService.logout({
       userId: logoutReqDto.userId,
       refreshToken,

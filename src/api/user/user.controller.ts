@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Patch,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -27,6 +28,7 @@ import { UserRole } from './types/user.type';
 import { AuthGuard } from '../auth/auth.guard';
 import { GetUserOrdersResDto } from './dto/get-user-orders-res.dto';
 import { GetUserBonusesResDto } from './dto/get-user-bonuses-res.dto';
+import { Request } from 'express';
 
 @ApiTags('user')
 @Controller('user')
