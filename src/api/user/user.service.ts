@@ -98,17 +98,28 @@ export class UserService {
     });
 
     if (!foundProfile) {
-      throw new NotFoundException({
-        type: 'Update',
-        description: "Cannot find user's profile.",
+      return this.dbService.profile.create({
+        data: {
+          userId: id,
+          ...updateUserDto,
+        },
       });
     }
 
-    return this.dbService.profile.update({
+    await this.dbService.profile.update({
       where: {
         userId: id,
       },
       data: updateUserDto,
+    });
+
+    return this.dbService.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        profile: true,
+      },
     });
   }
 
