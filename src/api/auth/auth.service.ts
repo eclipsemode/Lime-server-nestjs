@@ -216,6 +216,13 @@ export class AuthService {
 
     const newTokens = await this.tokenService.generate({ ...userDto });
 
+    if (!newTokens) {
+      throw new GoneException({
+        type: 'Refresh',
+        description: 'Cannot generate new tokens',
+      });
+    }
+
     await this.tokenService.saveToken(userDto.id, newTokens.refreshToken);
 
     return { userId: foundUser.id, ...newTokens };
