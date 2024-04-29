@@ -41,7 +41,7 @@ export class TokenService {
   async saveToken(userId: string, refreshToken: string) {
     const foundToken = await this.dbService.token.findUnique({
       where: {
-        userId,
+        refreshToken,
       },
     });
 
@@ -49,6 +49,7 @@ export class TokenService {
       return this.dbService.token.update({
         where: {
           userId,
+          refreshToken,
         },
         data: {
           refreshToken,

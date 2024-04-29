@@ -91,7 +91,7 @@ export class AuthService {
     if (!foundConfirmation) {
       throw new NotFoundException({
         type: 'Confirm',
-        description: 'Cannot find profile.',
+        description: 'Cannot find confirmation data.',
       });
     }
 
@@ -189,10 +189,19 @@ export class AuthService {
       },
     });
 
-    if (!foundToken || !validatedTokensData) {
+    if (!foundToken) {
       throw new UnauthorizedException({
         type: 'Refresh',
-        description: 'Authorization problem.',
+        description: 'Cannot find token.',
+      });
+    }
+
+    if (!validatedTokensData) {
+      await this.tokenService.removeToken(foundToken.userId, refreshToken);
+      throw new UnauthorizedException({
+        type: 'Refresh',
+        description:
+          'Token has been expired. Please, make authorization again.',
       });
     }
 

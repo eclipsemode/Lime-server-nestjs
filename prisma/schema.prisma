@@ -43,7 +43,7 @@ model User {
   tel          String        @unique
   isActivated  Boolean       @default(false)
   bonus        Bonus[]
-  token        Token?
+  token        Token[]
   order        Order[]
   confirmation Confirmation?
   profile      Profile?
@@ -111,7 +111,7 @@ model Token {
   id           String   @id @default(uuid())
   refreshToken String   @unique
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String   @unique
+  userId       String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
