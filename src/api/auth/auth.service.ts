@@ -170,10 +170,8 @@ export class AuthService {
     return this.tokenService.removeToken(userId, refreshToken);
   }
 
-  async refresh(request: Request) {
-    const refreshToken: string = await request.cookies['refreshToken'];
-
-    if (!refreshToken) {
+  async refresh(refreshTokenCookie: string) {
+    if (!refreshTokenCookie) {
       throw new UnauthorizedException({
         type: 'Refresh',
         description: 'Refresh token error.',
@@ -181,11 +179,11 @@ export class AuthService {
     }
 
     const validatedTokensData =
-      await this.tokenService.verifyRefreshToken(refreshToken);
+      await this.tokenService.verifyRefreshToken(refreshTokenCookie);
 
     const foundToken = await this.dbService.token.findUnique({
       where: {
-        refreshToken,
+        refreshToken: refreshTokenCookie,
       },
     });
 
@@ -193,16 +191,16 @@ export class AuthService {
       throw new UnauthorizedException({
         type: 'Refresh',
         description: 'Cannot find token.',
+        token: foundToken,
       });
     }
 
     if (!validatedTokensData) {
-      await this.tokenService.removeToken(foundToken.userId, refreshToken);
-      throw new UnauthorizedException({
-        type: 'Refresh',
-        description:
-          'Token has been expired. Please, make authorization again.',
-      });
+      await this.tokenService.removeToken(
+        foundToken.userId,
+        refreshTokenCookie,
+      );
+      return;
     }
 
     const foundUser = await this.dbService.user.findUnique({
@@ -232,7 +230,11 @@ export class AuthService {
       });
     }
 
-    await this.tokenService.saveToken(userDto.id, newTokens.refreshToken);
+    await this.tokenService.saveToken(
+      userDto.id,
+      newTokens.refreshToken,
+      refreshTokenCookie,
+    );
 
     return { userId: foundUser.id, ...newTokens };
   }

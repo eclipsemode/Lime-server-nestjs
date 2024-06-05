@@ -38,29 +38,31 @@ export class TokenService {
     });
   }
 
-  async saveToken(userId: string, refreshToken: string) {
-    const foundToken = await this.dbService.token.findUnique({
-      where: {
-        refreshToken,
-      },
-    });
-
-    if (foundToken) {
-      return this.dbService.token.update({
+  async saveToken(userId: string, tokenNew: string, tokenOld?: string) {
+    if (tokenOld) {
+      const foundToken = await this.dbService.token.findFirst({
         where: {
-          userId,
-          refreshToken,
-        },
-        data: {
-          refreshToken,
+          refreshToken: tokenOld,
         },
       });
+
+      if (foundToken) {
+        return this.dbService.token.update({
+          where: {
+            userId,
+            refreshToken: tokenOld,
+          },
+          data: {
+            refreshToken: tokenNew,
+          },
+        });
+      }
     }
 
     return this.dbService.token.create({
       data: {
         userId,
-        refreshToken,
+        refreshToken: tokenNew,
       },
     });
   }

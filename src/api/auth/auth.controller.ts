@@ -3,6 +3,8 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  HttpException,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -18,7 +20,7 @@ import {
 import { ConfirmAuthReqDto } from './dto/confirm-auth-req.dto';
 import { AuthReqDto } from './dto/auth-req.dto';
 import { AuthResDto } from './dto/auth-res.dto';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import { ConfirmAuthResDto } from './dto/confirm-auth-res.dto';
 import { LogoutReqDto } from './dto/logout-req.dto';
 import { LogoutResDto } from './dto/logout-res.dto';
@@ -91,8 +93,16 @@ export class AuthController {
     summary: 'Logout | Delete refresh token',
     description: 'Logging out with deleting refresh token data from cookies',
   })
-  logout(@Body() logoutReqDto: LogoutReqDto, @Req() request: Request) {
-    const refreshToken = request.cookies['refreshToken'];
+  async logout(
+    @Body() logoutReqDto: LogoutReqDto,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const refreshToken = await request.cookies['refreshToken'];
+
+    if (refreshToken) {
+      this.cookieService.removeToken(response, 'refreshToken');
+    }
 
     return this.authService.logout({
       userId: logoutReqDto.userId,
@@ -113,8 +123,14 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
+    const refreshTokenCookie: string = await request.cookies['refreshToken'];
+
+    if (!refreshTokenCookie) {
+      return;
+    }
+
     const { accessToken, refreshToken, userId } =
-      await this.authService.refresh(request);
+      await this.authService.refresh(refreshTokenCookie);
 
     if (refreshToken) {
       await this.cookieService.setToken(
@@ -124,10 +140,7 @@ export class AuthController {
         30 * 24 * 60 * 60 * 1000,
       );
     } else {
-      throw new ForbiddenException({
-        type: 'Refresh',
-        description: 'Cookie set error.',
-      });
+      return;
     }
 
     return {
