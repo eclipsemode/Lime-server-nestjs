@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Param,
   Patch,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -28,6 +27,8 @@ import { UserRole } from './types/user.type';
 import { AuthGuard } from '../auth/auth.guard';
 import { GetUserOrdersResDto } from './dto/get-user-orders-res.dto';
 import { GetUserBonusesResDto } from './dto/get-user-bonuses-res.dto';
+import { UpdateDateOfBirthResDto } from '@api/user/dto/update-date-of-birth-res.dto';
+import { UpdateDateOfBirthReqDto } from '@api/user/dto/update-date-of-birth-req.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -130,5 +131,23 @@ export class UserController {
   })
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
+  }
+
+  @Patch(':id/date')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOkResponse({
+    type: UpdateDateOfBirthResDto,
+    description: 'Date of birth was successfully updated',
+  })
+  @ApiOperation({
+    summary: 'Update date of birth',
+    description: 'Update date of birth',
+  })
+  updateDateOfBirth(
+    @Param('id') id: string,
+    @Body() updateDateOfBirthReqDto: UpdateDateOfBirthReqDto,
+  ) {
+    return this.userService.updateDateOfBirth(id, updateDateOfBirthReqDto.date);
   }
 }

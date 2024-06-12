@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsEmail, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import IProfile from '../types/profile.type';
+import { UserDateOfBirthEntity } from '@api/user/entities/userDateOfBirth.entity';
 
 export class ProfileEntity implements IProfile {
   @ApiProperty({
@@ -29,9 +36,6 @@ export class ProfileEntity implements IProfile {
   @IsOptional()
   email?: string;
 
-  @ApiProperty({ required: false, description: "User's date of birth" })
-  @IsDate()
-  dateOfBirth: Date;
   @ApiProperty({
     required: false,
     nullable: true,

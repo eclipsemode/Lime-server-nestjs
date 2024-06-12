@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { GenerateTokenDto } from './dto/generate-token.dto';
 import { JwtService } from '@nestjs/jwt';
 import { TokenEntity } from './entities/token.entity';

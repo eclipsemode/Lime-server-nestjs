@@ -165,4 +165,56 @@ export class UserService {
       ? { ...foundUser, role: foundUser.role as UserRole }
       : undefined;
   }
+
+  async updateDateOfBirth(userId: string, newDateOfBirth: Date) {
+    const foundUser = await this.dbService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        profile: true,
+      },
+    });
+
+    const foundUserDateOfBirth =
+      await this.dbService.userDateOfBirth.findUnique({
+        where: {
+          profileId: foundUser.profile.id,
+        },
+      });
+
+    if (!foundUser || !foundUser.profile) {
+      throw new NotFoundException({
+        type: 'updateDateOfBirth',
+        description: "Can't find user",
+      });
+    }
+
+    const days =
+      Math.abs(
+        new Date().getTime() -
+          new Date(foundUserDateOfBirth.updatedAt).getTime(),
+      ) /
+      (1000 * 60 * 60 * 24);
+
+    if (Math.floor(days) > 0) {
+      throw new ConflictException({
+        type: 'updateDateOfBirth',
+        description: `Дату рождения можно менять раз в год. Осталось дней до разблокирования: ${Math.floor(
+          days,
+        )}`,
+      });
+    }
+
+    const dateOfBirthUpdated = await this.dbService.userDateOfBirth.update({
+      where: {
+        profileId: foundUser.profile.id,
+      },
+      data: {
+        date: new Date(newDateOfBirth),
+      },
+    });
+
+    return dateOfBirthUpdated;
+  }
 }

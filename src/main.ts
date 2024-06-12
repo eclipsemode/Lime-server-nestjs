@@ -18,7 +18,7 @@ async function bootstrap() {
     bufferLogs: true,
     logger: new LoggerService(),
   });
-  app.use('/static', express.static(join(__dirname, '..', 'static')));
+  app.use('/static', express.static(join(__dirname, '..', '..', 'static')));
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({

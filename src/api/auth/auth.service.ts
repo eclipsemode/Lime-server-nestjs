@@ -10,8 +10,6 @@ import * as GreenSMS from 'greensms';
 import { ConfirmAuthReqDto } from './dto/confirm-auth-req.dto';
 import { AuthReqDto } from './dto/auth-req.dto';
 import { PrismaClient } from '@prisma/client';
-import { LogoutReqDto } from './dto/logout-req.dto';
-import { Request } from 'express';
 import { DbService } from '@services/db/db.service';
 import { UserService } from '@api/user/user.service';
 import { TokenService } from '@services/token/token.service';

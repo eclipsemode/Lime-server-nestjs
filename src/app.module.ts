@@ -21,7 +21,7 @@ import { FsService } from '@services/fs/fs.service';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'static'),
+      rootPath: join(__dirname, '..', '..', 'static'),
       serveRoot: '',
       renderPath: '*',
       exclude: [],
