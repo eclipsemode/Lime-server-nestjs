@@ -208,6 +208,14 @@ export class ProductService {
       });
     }
 
+    const ratingChecked = updateProductReqDto.rating
+      ? +updateProductReqDto.rating < 1
+        ? 1
+        : +updateProductReqDto.rating > 10
+          ? 10
+          : +updateProductReqDto.rating
+      : foundProduct.rating;
+
     try {
       const transaction = await this.dbService.$transaction(async (tx) => {
         await tx.product.update({
@@ -224,9 +232,7 @@ export class ProductService {
             categoryId: updateProductReqDto.categoryId
               ? updateProductReqDto.categoryId
               : foundProduct.categoryId,
-            rating: updateProductReqDto.rating
-              ? updateProductReqDto.rating
-              : foundProduct.rating,
+            rating: ratingChecked,
             isPizza: updateProductReqDto.isPizza
               ? updateProductReqDto.isPizza
               : foundProduct.isPizza,
