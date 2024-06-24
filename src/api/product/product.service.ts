@@ -50,7 +50,7 @@ export class ProductService {
       if (foundSku) {
         throw new BadRequestException({
           type: 'create',
-          description: "Can't create product, because SKU already exists",
+          description: 'Ошибка создания, заданный артикул уже существует',
         });
       }
     }
