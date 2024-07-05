@@ -81,8 +81,10 @@ export class CategoryController {
   @UseGuards(RoleGuard)
   @Role(UserRole.ADMIN)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Update category', description: 'Update category' })
-  @ApiFile('image', false, { name: { type: 'string' } }, UpdateCategoryReqDto)
+  @ApiOperation({
+    summary: 'Update category name',
+    description: 'Update category name',
+  })
   @ApiOkResponse({
     type: UpdateCategoryResDto,
     description: 'Category successfully updated',
@@ -90,6 +92,30 @@ export class CategoryController {
   update(
     @Param('id') id: string,
     @Body() updateCategoryReqDto: UpdateCategoryReqDto,
+  ) {
+    return this.categoryService.update(id, updateCategoryReqDto.name);
+  }
+
+  @Get('test')
+  test() {
+    return 'Hello Test';
+  }
+
+  @Patch(':id/image')
+  @UseGuards(RoleGuard)
+  @Role(UserRole.ADMIN)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Update category image',
+    description: 'Update category image',
+  })
+  @ApiFile('image', false, { name: { type: 'string' } }, UpdateCategoryReqDto)
+  @ApiOkResponse({
+    type: UpdateCategoryResDto,
+    description: 'Category image successfully updated',
+  })
+  updateCategoryImage(
+    @Param('id') id: string,
     @UploadedFile(
       new ParseFilePipe({
         fileIsRequired: false,
@@ -101,7 +127,7 @@ export class CategoryController {
     )
     image: Express.Multer.File,
   ) {
-    return this.categoryService.update(id, updateCategoryReqDto, image);
+    return this.categoryService.updateCategoryImage(id, image);
   }
 
   @Post('change-order')

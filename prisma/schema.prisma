@@ -228,7 +228,7 @@ model Category {
   orderProduct OrderProduct[]
   name         String         @unique
   image        String?
-  orderIndex   Int            @unique @default(autoincrement())
+  orderIndex   Int            @default(autoincrement())
   createdAt    DateTime       @default(now())
 
   @@map("categories")

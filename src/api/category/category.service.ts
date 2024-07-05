@@ -17,7 +17,13 @@ export class CategoryService {
   ) {}
 
   getAll() {
-    return this.dbService.category.findMany();
+    return this.dbService.category.findMany({
+      orderBy: [
+        {
+          orderIndex: 'asc',
+        },
+      ],
+    });
   }
 
   async create({ name }: CreateCategoryReqDto, image?: Express.Multer.File) {
@@ -48,11 +54,7 @@ export class CategoryService {
     });
   }
 
-  async update(
-    id: string,
-    { name }: UpdateCategoryReqDto,
-    image: Express.Multer.File,
-  ) {
+  async update(id: string, name: string) {
     if (name) {
       const isNameExist = await this.dbService.category.findUnique({
         where: {
@@ -61,13 +63,34 @@ export class CategoryService {
       });
 
       if (isNameExist) {
-        throw new ConflictException({
-          type: 'update',
-          description: 'Current category name already exists',
-        });
+        return;
       }
     }
 
+    const foundCategoryWithId = await this.dbService.category.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!foundCategoryWithId) {
+      throw new NotFoundException({
+        type: 'update',
+        description: "Can't find category by id",
+      });
+    }
+
+    return this.dbService.category.update({
+      where: {
+        id,
+      },
+      data: {
+        name: name ? name : foundCategoryWithId.name,
+      },
+    });
+  }
+
+  async updateCategoryImage(id: string, image: Express.Multer.File) {
     const foundCategoryWithId = await this.dbService.category.findUnique({
       where: {
         id,
@@ -96,7 +119,6 @@ export class CategoryService {
         id,
       },
       data: {
-        name: name ? name : foundCategoryWithId.name,
         image: image ? fileName : foundCategoryWithId.image,
       },
     });
@@ -156,6 +178,6 @@ export class CategoryService {
 
     await Promise.all(categoryPromises);
 
-    return this.dbService.category.findMany();
+    return this.getAll();
   }
 }
