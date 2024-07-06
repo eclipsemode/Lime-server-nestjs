@@ -16,7 +16,7 @@ import IOrder, {
   PaymentType,
 } from '@api/order/types/order.type';
 import { OrderProductEntity } from '@api/order/entities/orderProduct.entity';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 
 export class OrderEntity implements IOrder {
   @ApiProperty({

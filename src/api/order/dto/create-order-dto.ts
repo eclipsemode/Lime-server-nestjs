@@ -8,6 +8,7 @@ export class CreateOrderDto extends OmitType(OrderEntity, [
   'createdAt',
   'id',
   'orderProducts',
+  'clientEmail',
 ]) {
   @ApiProperty({
     example: [

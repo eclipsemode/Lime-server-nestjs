@@ -96,11 +96,6 @@ export class CategoryController {
     return this.categoryService.update(id, updateCategoryReqDto.name);
   }
 
-  @Get('test')
-  test() {
-    return 'Hello Test';
-  }
-
   @Patch(':id/image')
   @UseGuards(RoleGuard)
   @Role(UserRole.ADMIN)

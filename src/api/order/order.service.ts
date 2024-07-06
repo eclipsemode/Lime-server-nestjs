@@ -19,7 +19,7 @@ export class OrderService {
   async getAll() {
     return this.dbService.order.findMany({
       include: {
-        orderProduct: true,
+        orderProducts: true,
       },
     });
   }
@@ -42,8 +42,11 @@ export class OrderService {
       where: {
         userId,
       },
+      orderBy: {
+        preOrderDate: 'desc',
+      },
       include: {
-        orderProduct: true,
+        orderProducts: true,
         _count: true,
       },
     });
@@ -67,7 +70,7 @@ export class OrderService {
         id,
       },
       include: {
-        orderProduct: true,
+        orderProducts: true,
       },
     });
   }
@@ -87,7 +90,6 @@ export class OrderService {
       userId,
       promoCodeId,
       clientName,
-      clientEmail,
       clientAddress,
       clientEntrance,
       clientFloor,
@@ -125,7 +127,6 @@ export class OrderService {
             clientEntrance,
             clientFloor,
             clientRoom,
-            clientEmail,
             commentary,
             channel,
             branchId: foundBranch ? branchId : null,

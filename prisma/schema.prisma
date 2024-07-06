@@ -166,7 +166,7 @@ model Order {
   userId         String?
   branch         Branch?        @relation(fields: [branchId], references: [id], onDelete: SetNull)
   branchId       String?
-  orderProduct   OrderProduct[]
+  orderProducts  OrderProduct[]
   createdAt      DateTime       @default(now())
 
   @@map("orders")
