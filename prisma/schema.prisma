@@ -178,6 +178,7 @@ model OrderProduct {
   productId   String?
   order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId     String
+  isPizza     Boolean   @default(false)
   name        String
   rating      Int
   description String

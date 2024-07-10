@@ -7,7 +7,6 @@ export class OrderProductEntity extends OmitType(ProductEntity, [
   'productSize',
   'description',
   'name',
-  'isPizza',
 ]) {
   @ApiProperty({
     example: 'bf60ab0f-23ac-4da6-a269-e61e63b72117',

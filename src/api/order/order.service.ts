@@ -158,6 +158,7 @@ export class OrderService {
             data: {
               price: product.price,
               image: foundProduct.image,
+              isPizza: foundProduct.isPizza,
               sku: product.sku,
               amount: product.amount,
               productSize: product.productSize,

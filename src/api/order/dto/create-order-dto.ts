@@ -23,17 +23,29 @@ export class CreateOrderDto extends OmitType(OrderEntity, [
     description: 'Order products array',
     isArray: true,
     type: Array(
-      OmitType(OrderProductEntity, ['id', 'categoryId', 'image', 'orderId']),
+      OmitType(OrderProductEntity, [
+        'id',
+        'categoryId',
+        'image',
+        'orderId',
+        'isPizza',
+      ]),
     ),
   })
   @ValidateNested({ each: true })
   @Type(() =>
-    OmitType(OrderProductEntity, ['id', 'categoryId', 'image', 'orderId']),
+    OmitType(OrderProductEntity, [
+      'id',
+      'categoryId',
+      'image',
+      'orderId',
+      'isPizza',
+    ]),
   )
   @ArrayMinSize(1)
   @IsArray()
   orderProducts: Omit<
     OrderProductEntity,
-    'id' | 'categoryId' | 'image' | 'orderId'
+    'id' | 'categoryId' | 'image' | 'orderId' | 'isPizza'
   >[];
 }
