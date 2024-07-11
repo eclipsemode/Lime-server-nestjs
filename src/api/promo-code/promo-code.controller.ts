@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PromoCodeService } from './promo-code.service';
@@ -15,6 +16,7 @@ import {
   ApiFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { PromoCodeCreateReqDto } from './dto/promoCode-create-req.dto';
@@ -36,6 +38,21 @@ export class PromoCodeController {
   @UseGuards(RoleGuard)
   @Role(UserRole.ADMIN)
   @ApiBearerAuth('JWT-auth')
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    required: true,
+  })
+  @ApiQuery({
+    name: 'size',
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'match',
+    type: String,
+    required: false,
+  })
   @ApiOperation({
     summary: 'Get all promo codes',
     description: 'Get all promo codes',
@@ -45,8 +62,12 @@ export class PromoCodeController {
     description: 'Successfully found',
     isArray: true,
   })
-  getAll() {
-    return this.promoCodeService.getAll();
+  getAll(
+    @Query('page') page: number,
+    @Query('size') size: number,
+    @Query('match') match: string,
+  ) {
+    return this.promoCodeService.getAll(page, size, match);
   }
 
   @Post()

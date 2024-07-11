@@ -6,10 +6,7 @@ import {
 import { PromoCodeCreateReqDto } from './dto/promoCode-create-req.dto';
 import { PromoCodeChangeReqDto } from './dto/promoCode-change-req.dto';
 import { DbService } from '@services/db/db.service';
-import {
-  IPromoCodeEntity,
-  PromoCodeEntity,
-} from '@api/promo-code/entities/promo-code.entity';
+import { PromoCodeEntity } from '@api/promo-code/entities/promo-code.entity';
 import { Prisma } from '@prisma/client/extension';
 import { PrismaClient } from '@prisma/client';
 import { DefaultArgs } from '@prisma/client/runtime/library';
@@ -19,8 +16,23 @@ import { PromoCodeType } from '@api/promo-code/types/promo-code.type';
 export class PromoCodeService {
   constructor(private readonly dbService: DbService) {}
 
-  getAll() {
-    return this.dbService.promoCode.findMany();
+  async getAll(page: number, size: number, match: string = '') {
+    const [promoCodes, totalPromoCodes] = await this.dbService.$transaction([
+      this.dbService.promoCode.findMany({
+        skip: +((page - 1) * size),
+        take: +size,
+        where: { code: { contains: match } },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.dbService.promoCode.count(),
+    ]);
+
+    return {
+      list: promoCodes,
+      _count: totalPromoCodes,
+    };
   }
 
   async create(promoCodeCreateReqDto: PromoCodeCreateReqDto) {
