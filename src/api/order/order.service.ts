@@ -38,18 +38,31 @@ export class OrderService {
       });
     }
 
-    return this.dbService.order.findMany({
+    const ordersCount = await this.dbService.order.count({
+      where: {
+        userId,
+      },
+    });
+
+    const orders = await this.dbService.order.findMany({
+      skip: +((page - 1) * size),
+      take: +size,
       where: {
         userId,
       },
       orderBy: {
-        preOrderDate: 'desc',
+        createdAt: 'desc',
       },
       include: {
         orderProducts: true,
         _count: true,
       },
     });
+
+    return {
+      orders,
+      _count: ordersCount,
+    };
   }
 
   async get(id: string) {
