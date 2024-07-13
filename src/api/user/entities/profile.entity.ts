@@ -7,7 +7,10 @@ import {
   IsString,
 } from 'class-validator';
 import IProfile from '../types/profile.type';
-import { UserDateOfBirthEntity } from '@api/user/entities/userDateOfBirth.entity';
+import {
+  IUserDateOfBirth,
+  UserDateOfBirthEntity,
+} from '@api/user/entities/userDateOfBirth.entity';
 
 export class ProfileEntity implements IProfile {
   @ApiProperty({
@@ -35,6 +38,20 @@ export class ProfileEntity implements IProfile {
   @IsEmail()
   @IsOptional()
   email?: string;
+
+  @ApiProperty({
+    type: () => UserDateOfBirthEntity,
+    description: 'Date of Birth',
+    example: {
+      id: 'bf60ab0f-23ac-4da6-a269-e61e63b72117',
+      profileId: 'bf60ab0f-23ac-4da6-a269-e61e63b72117',
+      date: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  })
+  @IsObject()
+  dateOfBirth: IUserDateOfBirth;
 
   @ApiProperty({
     required: false,

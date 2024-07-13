@@ -38,3 +38,5 @@ export class UserDateOfBirthEntity {
   @IsDate()
   updatedAt: Date;
 }
+
+export interface IUserDateOfBirth extends UserDateOfBirthEntity {}

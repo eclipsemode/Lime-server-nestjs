@@ -58,7 +58,11 @@ export class UserService {
         id,
       },
       include: {
-        profile: true,
+        profile: {
+          include: {
+            userDateOfBirth: true,
+          },
+        },
         order: true,
         bonus: true,
       },
@@ -159,6 +163,13 @@ export class UserService {
       where: {
         id: userId,
       },
+      include: {
+        profile: {
+          include: {
+            userDateOfBirth: true,
+          },
+        },
+      },
     });
 
     return foundUser
@@ -172,7 +183,11 @@ export class UserService {
         id: userId,
       },
       include: {
-        profile: true,
+        profile: {
+          include: {
+            userDateOfBirth: true,
+          },
+        },
       },
     });
 
@@ -190,6 +205,15 @@ export class UserService {
       });
     }
 
+    if (!foundUser.profile.userDateOfBirth) {
+      return this.dbService.userDateOfBirth.create({
+        data: {
+          profileId: foundUser.profile.id,
+          date: new Date(newDateOfBirth),
+        },
+      });
+    }
+
     const days =
       Math.abs(
         new Date().getTime() -
@@ -197,7 +221,7 @@ export class UserService {
       ) /
       (1000 * 60 * 60 * 24);
 
-    if (Math.floor(days) > 0) {
+    if (Math.floor(days) < 367) {
       throw new ConflictException({
         type: 'updateDateOfBirth',
         description: `Дату рождения можно менять раз в год. Осталось дней до разблокирования: ${Math.floor(

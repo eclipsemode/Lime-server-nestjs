@@ -4,10 +4,13 @@ import {
   IsDate,
   IsEnum,
   IsMobilePhone,
+  IsObject,
   IsString,
 } from 'class-validator';
 import { UserRole } from '../types/user.type';
 import IUser from '../types/user.type';
+import { ProfileEntity } from '@api/user/entities/profile.entity';
+import IProfile from '@api/user/types/profile.type';
 
 export class UserEntity implements IUser {
   @ApiProperty({
@@ -25,6 +28,14 @@ export class UserEntity implements IUser {
   })
   @IsEnum(UserRole)
   role: UserRole;
+
+  @ApiProperty({
+    example: ProfileEntity,
+    description: 'Profile of user',
+    type: () => ProfileEntity,
+  })
+  @IsObject()
+  profile: IProfile;
 
   @ApiProperty({ example: '79180000000', description: "User's phone number" })
   @IsMobilePhone('ru-RU')

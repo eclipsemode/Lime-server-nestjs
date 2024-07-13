@@ -150,6 +150,7 @@ export class AuthService {
     const userDto = new TokenEntity({
       ...foundUser,
       role: foundUser.role as UserRole,
+      profile: null,
     });
     const confirmDto = await this.tokenService.generate({ ...userDto });
 
@@ -217,6 +218,7 @@ export class AuthService {
     const userDto = new TokenEntity({
       ...foundUser,
       role: foundUser.role as UserRole,
+      profile: null,
     });
 
     const newTokens = await this.tokenService.generate({ ...userDto });
