@@ -3,6 +3,7 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  Param,
   Post,
   Req,
   Res,
@@ -82,7 +83,7 @@ export class AuthController {
     };
   }
 
-  @Post('logout')
+  @Post('logout/:token')
   @ApiNoContentResponse({
     type: LogoutResDto,
     description: 'Successfully logged out.',
@@ -95,20 +96,25 @@ export class AuthController {
     @Body() logoutReqDto: LogoutReqDto,
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
+    @Param('token') token?: string,
   ) {
-    const refreshToken = await request.cookies['refreshToken'];
+    let refreshToken = await request.cookies['refreshToken'];
+
+    if (!refreshToken) {
+      refreshToken = token;
+    }
 
     if (refreshToken) {
       this.cookieService.removeToken(response, 'refreshToken');
+      return this.authService.logout({
+        userId: logoutReqDto.userId,
+        refreshToken,
+      });
     }
-
-    return this.authService.logout({
-      userId: logoutReqDto.userId,
-      refreshToken,
-    });
+    return;
   }
 
-  @Get('refresh')
+  @Get('refresh/:token')
   @ApiOkResponse({
     type: ConfirmAuthResDto,
     description: 'Tokens successfully refresh.',
@@ -120,8 +126,13 @@ export class AuthController {
   async refresh(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
+    @Param('token') token?: string,
   ) {
-    const refreshTokenCookie: string = await request.cookies['refreshToken'];
+    let refreshTokenCookie: string = await request.cookies['refreshToken'];
+
+    if (!refreshTokenCookie) {
+      refreshTokenCookie = token;
+    }
 
     if (!refreshTokenCookie) {
       return;
