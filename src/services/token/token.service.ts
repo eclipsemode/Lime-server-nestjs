@@ -59,12 +59,26 @@ export class TokenService {
       }
     }
 
-    return this.dbService.token.create({
+    const token = await this.dbService.token.create({
       data: {
         userId,
         refreshToken: tokenNew,
       },
     });
+
+    return {
+      data: {
+        userId: userId,
+        refreshToken: token.refreshToken,
+      },
+    };
+
+    // return this.dbService.token.create({
+    //   data: {
+    //     userId,
+    //     refreshToken: tokenNew,
+    //   },
+    // });
   }
 
   async removeToken(userId: string, refreshToken: string) {
