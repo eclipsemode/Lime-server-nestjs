@@ -12,8 +12,6 @@ import { UpdateProductReqDto } from '@api/product/dto/update-product-req.dto';
 import { ChangeOrderReqDto } from '@api/product/dto/change-order-req.dto';
 import { ProductEntity } from '@api/product/entities/product.entity';
 import { PrismaClient } from '@prisma/client';
-import { Prisma } from '@prisma/client/extension';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class ProductService {
@@ -21,6 +19,7 @@ export class ProductService {
     private readonly dbService: DbService,
     private readonly fsService: FsService,
   ) {}
+
   async create(
     {
       name,
@@ -381,7 +380,7 @@ export class ProductService {
   async findProductById(
     productId: string,
     tx?: Omit<
-      PrismaClient<Prisma.TransactionClient, never, DefaultArgs>,
+      PrismaClient,
       '$on' | '$connect' | '$disconnect' | '$use' | '$transaction' | '$extends'
     >,
   ): Promise<ProductEntity | undefined> {
@@ -389,9 +388,8 @@ export class ProductService {
       return undefined;
     }
 
-    const foundProduct = await (tx
-      ? tx.product
-      : this.dbService.product
+    const foundProduct = await (
+      tx ? tx.product : this.dbService.product
     ).findUnique({
       where: {
         id: productId,

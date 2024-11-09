@@ -7,9 +7,7 @@ import { PromoCodeCreateReqDto } from './dto/promoCode-create-req.dto';
 import { PromoCodeChangeReqDto } from './dto/promoCode-change-req.dto';
 import { DbService } from '@services/db/db.service';
 import { PromoCodeEntity } from '@api/promo-code/entities/promo-code.entity';
-import { Prisma } from '@prisma/client/extension';
 import { PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { PromoCodeType } from '@api/promo-code/types/promo-code.type';
 
 @Injectable()
@@ -180,7 +178,7 @@ export class PromoCodeService {
   async findPromoCode(
     promoCodeId: string,
     tx?: Omit<
-      PrismaClient<Prisma.TransactionClient, never, DefaultArgs>,
+      PrismaClient,
       '$on' | '$connect' | '$disconnect' | '$use' | '$transaction' | '$extends'
     >,
   ): Promise<PromoCodeEntity | undefined> {
@@ -188,9 +186,8 @@ export class PromoCodeService {
       return undefined;
     }
 
-    const foundPromoCode = await (tx
-      ? tx.promoCode
-      : this.dbService.promoCode
+    const foundPromoCode = await (
+      tx ? tx.promoCode : this.dbService.promoCode
     ).findUnique({
       where: {
         id: promoCodeId,

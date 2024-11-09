@@ -6,8 +6,6 @@ import {
 import { UpdateUserReqDto } from './dto/update-user-req.dto';
 import { DbService } from '@services/db/db.service';
 import { PrismaClient } from '@prisma/client';
-import { Prisma } from '@prisma/client/extension';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { UserEntity } from '@api/user/entities/user.entity';
 import { UserRole } from '@api/user/types/user.type';
 
@@ -151,7 +149,7 @@ export class UserService {
   async findUserById(
     userId: string,
     tx?: Omit<
-      PrismaClient<Prisma.TransactionClient, never, DefaultArgs>,
+      PrismaClient,
       '$on' | '$connect' | '$disconnect' | '$use' | '$transaction' | '$extends'
     >,
   ): Promise<UserEntity | undefined> {
